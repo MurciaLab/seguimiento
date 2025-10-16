@@ -139,6 +139,9 @@ class TimelineRenderer {
       // Add event listeners for timeline interactions
       this.setupEventListeners();
       
+      // Add interaction helpers
+      this.addInteractionHelpers();
+      
       console.log('Timeline initialized successfully');
       return true;
       
@@ -146,6 +149,117 @@ class TimelineRenderer {
       console.error('Failed to initialize timeline:', error);
       this.showTimelineError('Failed to initialize timeline visualization');
       return false;
+    }
+  }
+
+  /**
+   * Add interaction helpers (keyboard help, touch indicators)
+   */
+  addInteractionHelpers() {
+    if (!this.container) return;
+    
+    // Add keyboard navigation help
+    this.addKeyboardHelp();
+    
+    // Add zoom indicator
+    this.addZoomIndicator();
+    
+    // Add touch indicators for mobile
+    if (this.isMobileDevice()) {
+      this.addTouchIndicators();
+    }
+  }
+
+  /**
+   * Add keyboard navigation help overlay
+   */
+  addKeyboardHelp() {
+    const helpOverlay = document.createElement('div');
+    helpOverlay.className = 'timeline-keyboard-help';
+    helpOverlay.innerHTML = `
+      <div class="keyboard-shortcut"><span class="key">←→</span> Pan timeline</div>
+      <div class="keyboard-shortcut"><span class="key">↑↓</span> Zoom in/out</div>
+      <div class="keyboard-shortcut"><span class="key">Home</span> Go to start</div>
+      <div class="keyboard-shortcut"><span class="key">End</span> Go to end</div>
+      <div class="keyboard-shortcut"><span class="key">Ctrl+F</span> Fit all</div>
+    `;
+    
+    this.container.appendChild(helpOverlay);
+  }
+
+  /**
+   * Add zoom level indicator
+   */
+  addZoomIndicator() {
+    const zoomIndicator = document.createElement('div');
+    zoomIndicator.className = 'timeline-zoom-indicator';
+    zoomIndicator.id = 'timeline-zoom-indicator';
+    zoomIndicator.textContent = '100%';
+    
+    this.container.appendChild(zoomIndicator);
+  }
+
+  /**
+   * Add touch gesture indicators for mobile
+   */
+  addTouchIndicators() {
+    const touchIndicator = document.createElement('div');
+    touchIndicator.className = 'timeline-touch-indicator';
+    touchIndicator.id = 'timeline-touch-indicator';
+    touchIndicator.innerHTML = `
+      <div>📱 Pinch to zoom</div>
+      <div>👆 Swipe to pan</div>
+    `;
+    
+    this.container.appendChild(touchIndicator);
+    
+    // Show briefly on first touch
+    let firstTouch = true;
+    this.container.addEventListener('touchstart', () => {
+      if (firstTouch) {
+        this.showTouchIndicator();
+        firstTouch = false;
+      }
+    });
+  }
+
+  /**
+   * Check if device is mobile
+   * @returns {boolean} True if mobile device
+   */
+  isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.innerWidth <= 768);
+  }
+
+  /**
+   * Show touch indicator briefly
+   */
+  showTouchIndicator() {
+    const indicator = document.getElementById('timeline-touch-indicator');
+    if (indicator) {
+      indicator.classList.add('visible');
+      setTimeout(() => {
+        indicator.classList.remove('visible');
+      }, 2000);
+    }
+  }
+
+  /**
+   * Update zoom indicator
+   * @param {number} zoomLevel - Current zoom level (0-100)
+   */
+  updateZoomIndicator(zoomLevel) {
+    const indicator = document.getElementById('timeline-zoom-indicator');
+    if (indicator) {
+      indicator.textContent = `${Math.round(zoomLevel)}%`;
+      indicator.classList.add('visible');
+      
+      // Hide after 1 second
+      clearTimeout(this.zoomIndicatorTimeout);
+      this.zoomIndicatorTimeout = setTimeout(() => {
+        indicator.classList.remove('visible');
+      }, 1000);
     }
   }
 
@@ -166,8 +280,15 @@ class TimelineRenderer {
     });
 
     // Handle timeline range changes (zoom/pan) - Requirement 2.3, 2.4
+    // Throttle range change events for better performance during smooth interactions
+    let rangeChangeTimeout;
     this.timeline.on('rangechange', (event) => {
-      this.handleRangeChange(event);
+      if (rangeChangeTimeout) {
+        clearTimeout(rangeChangeTimeout);
+      }
+      rangeChangeTimeout = setTimeout(() => {
+        this.handleRangeChange(event);
+      }, 16); // ~60fps throttling for smooth interactions
     });
 
     // Handle timeline range changed (after zoom/pan completed)
@@ -235,8 +356,33 @@ class TimelineRenderer {
     // Update navigation indicators during interaction
     this.updateNavigationIndicators(event);
     
+    // Update zoom level indicator
+    this.updateZoomLevelIndicator(event);
+    
     // Performance optimization for large datasets (Requirement 2.5)
     this.optimizeForLargeDatasets(event);
+  }
+
+  /**
+   * Update zoom level indicator based on current range
+   * @param {Object} event - Range change event
+   */
+  updateZoomLevelIndicator(event) {
+    if (!this.dataset) return;
+    
+    const items = this.dataset.get();
+    if (items.length === 0) return;
+    
+    const dates = items.map(item => item.start).filter(Boolean);
+    if (dates.length === 0) return;
+    
+    const totalRange = Math.max(...dates) - Math.min(...dates);
+    const currentRange = event.end.getTime() - event.start.getTime();
+    
+    if (totalRange > 0) {
+      const zoomLevel = Math.max(1, (totalRange / currentRange) * 100);
+      this.updateZoomIndicator(Math.min(zoomLevel, 10000)); // Cap at 10000%
+    }
   }
 
   /**
@@ -662,11 +808,184 @@ class TimelineRenderer {
    * Perform optimizations for large datasets
    */
   performLargeDatasetOptimizations() {
-    // Implement clustering, virtualization, or other optimizations
-    console.log('Performing large dataset optimizations');
+    if (!this.dataset || !this.timeline) return;
     
-    // Example: Could implement item clustering for very large datasets
-    // This would group nearby items when zoomed out
+    const itemCount = this.dataset.length;
+    console.log(`Performing large dataset optimizations for ${itemCount} items`);
+    
+    // For very large datasets (>500 items), implement clustering
+    if (itemCount > 500) {
+      this.enableItemClustering();
+    }
+    
+    // Optimize timeline options for large datasets
+    if (itemCount > 100) {
+      this.optimizeTimelineOptions();
+    }
+    
+    // Add performance monitoring
+    this.monitorPerformance();
+  }
+
+  /**
+   * Enable item clustering for very large datasets
+   */
+  enableItemClustering() {
+    if (!this.timeline) return;
+    
+    // Update timeline options to enable clustering
+    const clusterOptions = {
+      cluster: {
+        maxItems: 50, // Maximum items to show before clustering
+        titleTemplate: '{count} events',
+        showStipes: true,
+        fitOnDoubleClick: true
+      }
+    };
+    
+    try {
+      this.timeline.setOptions(clusterOptions);
+      console.log('Item clustering enabled for large dataset');
+    } catch (error) {
+      console.warn('Failed to enable clustering:', error);
+    }
+  }
+
+  /**
+   * Optimize timeline options for large datasets
+   */
+  optimizeTimelineOptions() {
+    if (!this.timeline) return;
+    
+    const optimizedOptions = {
+      // Reduce animation duration for better performance
+      animation: {
+        duration: 200,
+        easingFunction: 'linear'
+      },
+      // Optimize rendering
+      throttleRedraw: 16, // ~60fps
+      // Reduce visual complexity
+      showMinorLabels: false,
+      // Optimize item rendering
+      template: (item) => {
+        // Use simpler template for large datasets
+        return this.createOptimizedItemTemplate(item);
+      }
+    };
+    
+    try {
+      this.timeline.setOptions(optimizedOptions);
+      console.log('Timeline options optimized for large dataset');
+    } catch (error) {
+      console.warn('Failed to optimize timeline options:', error);
+    }
+  }
+
+  /**
+   * Create optimized item template for large datasets
+   * @param {Object} item - Timeline item
+   * @returns {string} Optimized HTML template
+   */
+  createOptimizedItemTemplate(item) {
+    // Simplified template with minimal DOM elements
+    const party = item.party || 'other';
+    const partyClass = `party-${this.getPartyGroupId(party)}`;
+    
+    return `
+      <div class="timeline-card-simple ${partyClass}">
+        <div class="card-title">${item.headline || 'Event'}</div>
+        <div class="card-party">${party}</div>
+      </div>
+    `;
+  }
+
+  /**
+   * Monitor timeline performance
+   */
+  monitorPerformance() {
+    if (!window.performance || !this.timeline) return;
+    
+    // Monitor frame rate during interactions
+    let frameCount = 0;
+    let lastTime = performance.now();
+    
+    const measureFPS = () => {
+      frameCount++;
+      const currentTime = performance.now();
+      
+      if (currentTime - lastTime >= 1000) {
+        const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+        
+        if (fps < 30) {
+          console.warn(`Timeline performance warning: ${fps} FPS`);
+          this.handleLowPerformance();
+        }
+        
+        frameCount = 0;
+        lastTime = currentTime;
+      }
+      
+      requestAnimationFrame(measureFPS);
+    };
+    
+    // Start monitoring during interactions
+    this.timeline.on('rangechange', () => {
+      if (!this.performanceMonitoring) {
+        this.performanceMonitoring = true;
+        requestAnimationFrame(measureFPS);
+      }
+    });
+  }
+
+  /**
+   * Handle low performance scenarios
+   */
+  handleLowPerformance() {
+    console.log('Applying additional performance optimizations');
+    
+    // Disable animations temporarily
+    if (this.timeline) {
+      this.timeline.setOptions({
+        animation: false,
+        throttleRedraw: 32 // Reduce to 30fps
+      });
+    }
+    
+    // Show performance warning to user
+    this.showPerformanceWarning();
+  }
+
+  /**
+   * Show performance warning to user
+   */
+  showPerformanceWarning() {
+    const warningId = 'timeline-performance-warning';
+    let warning = document.getElementById(warningId);
+    
+    if (!warning) {
+      warning = document.createElement('div');
+      warning.id = warningId;
+      warning.className = 'timeline-performance-warning';
+      warning.innerHTML = `
+        <div class="warning-content">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">Large dataset detected. Some animations disabled for better performance.</span>
+          <button class="warning-close" onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+      `;
+      
+      if (this.container && this.container.parentElement) {
+        this.container.parentElement.insertBefore(warning, this.container);
+      }
+    }
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      if (warning && warning.parentElement) {
+        warning.remove();
+      }
+    }, 5000);
   }
 
   /**
@@ -710,8 +1029,148 @@ class TimelineRenderer {
    * @param {number} endPosition - End position (0-1)
    */
   updateNavigationBar(startPosition, endPosition) {
-    // Update navigation bar if it exists
-    // This could show current position within the full timeline
+    // Create or update navigation indicator
+    let navIndicator = document.getElementById('timeline-nav-indicator');
+    
+    if (!navIndicator) {
+      navIndicator = this.createNavigationIndicator();
+    }
+    
+    if (navIndicator) {
+      const viewportBar = navIndicator.querySelector('.nav-viewport');
+      if (viewportBar) {
+        const width = Math.max(2, (endPosition - startPosition) * 100);
+        const left = startPosition * 100;
+        
+        viewportBar.style.width = `${width}%`;
+        viewportBar.style.left = `${left}%`;
+      }
+      
+      // Update position text
+      const positionText = navIndicator.querySelector('.nav-position-text');
+      if (positionText) {
+        const percentage = Math.round((startPosition + endPosition) / 2 * 100);
+        positionText.textContent = `${percentage}%`;
+      }
+    }
+  }
+
+  /**
+   * Create navigation indicator element
+   * @returns {HTMLElement} Navigation indicator element
+   */
+  createNavigationIndicator() {
+    // Check if container has space for navigation indicator
+    if (!this.container || !this.container.parentElement) {
+      return null;
+    }
+    
+    // Create navigation indicator container
+    const navContainer = document.createElement('div');
+    navContainer.id = 'timeline-nav-indicator';
+    navContainer.className = 'timeline-navigation-indicator';
+    
+    navContainer.innerHTML = `
+      <div class="nav-track">
+        <div class="nav-viewport"></div>
+      </div>
+      <div class="nav-controls">
+        <button class="nav-btn nav-start" title="Go to start" aria-label="Go to timeline start">⏮</button>
+        <button class="nav-btn nav-zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+        <span class="nav-position-text">50%</span>
+        <button class="nav-btn nav-zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+        <button class="nav-btn nav-end" title="Go to end" aria-label="Go to timeline end">⏭</button>
+        <button class="nav-btn nav-fit" title="Fit all" aria-label="Fit all items">⊞</button>
+      </div>
+    `;
+    
+    // Add event listeners for navigation controls
+    this.setupNavigationControls(navContainer);
+    
+    // Insert navigation indicator after timeline container
+    this.container.parentElement.insertBefore(navContainer, this.container.nextSibling);
+    
+    return navContainer;
+  }
+
+  /**
+   * Setup navigation control event listeners
+   * @param {HTMLElement} navContainer - Navigation container element
+   */
+  setupNavigationControls(navContainer) {
+    const startBtn = navContainer.querySelector('.nav-start');
+    const endBtn = navContainer.querySelector('.nav-end');
+    const zoomInBtn = navContainer.querySelector('.nav-zoom-in');
+    const zoomOutBtn = navContainer.querySelector('.nav-zoom-out');
+    const fitBtn = navContainer.querySelector('.nav-fit');
+    const track = navContainer.querySelector('.nav-track');
+    
+    if (startBtn) {
+      startBtn.addEventListener('click', () => this.goToStart());
+    }
+    
+    if (endBtn) {
+      endBtn.addEventListener('click', () => this.goToEnd());
+    }
+    
+    if (zoomInBtn) {
+      zoomInBtn.addEventListener('click', () => this.zoomIn());
+    }
+    
+    if (zoomOutBtn) {
+      zoomOutBtn.addEventListener('click', () => this.zoomOut());
+    }
+    
+    if (fitBtn) {
+      fitBtn.addEventListener('click', () => {
+        if (this.timeline) {
+          this.timeline.fit({ animation: { duration: 500 } });
+        }
+      });
+    }
+    
+    // Add click-to-navigate on track
+    if (track) {
+      track.addEventListener('click', (event) => {
+        const rect = track.getBoundingClientRect();
+        const clickPosition = (event.clientX - rect.left) / rect.width;
+        this.navigateToPosition(clickPosition);
+      });
+    }
+  }
+
+  /**
+   * Navigate to specific position in timeline
+   * @param {number} position - Position (0-1) in timeline
+   */
+  navigateToPosition(position) {
+    if (!this.timeline || !this.dataset) return;
+    
+    const items = this.dataset.get();
+    if (items.length === 0) return;
+    
+    const dates = items.map(item => item.start).filter(Boolean);
+    if (dates.length === 0) return;
+    
+    const minDate = Math.min(...dates);
+    const maxDate = Math.max(...dates);
+    const totalRange = maxDate - minDate;
+    
+    if (totalRange <= 0) return;
+    
+    const targetTime = minDate + (totalRange * position);
+    const targetDate = new Date(targetTime);
+    
+    // Get current range size to maintain zoom level
+    const currentRange = this.timeline.getWindow();
+    const rangeSize = currentRange.end - currentRange.start;
+    
+    // Center the view on target position
+    this.timeline.setWindow(
+      new Date(targetDate.getTime() - rangeSize / 2),
+      new Date(targetDate.getTime() + rangeSize / 2),
+      { animation: { duration: 300 } }
+    );
   }
 
   /**
@@ -829,10 +1288,16 @@ class TimelineRenderer {
         return true;
       }
 
-      // Add items to dataset
-      this.dataset.add(validItems);
+      // Add items to dataset with performance optimization for large datasets
+      if (validItems.length > 50) {
+        // For large datasets, add items in batches to maintain smooth performance
+        this.addItemsInBatches(validItems);
+      } else {
+        // For smaller datasets, add all items at once
+        this.dataset.add(validItems);
+      }
 
-      // Fit timeline to show all items with some padding
+      // Fit timeline to show all items with smooth animation (Requirement 2.3, 2.4)
       setTimeout(() => {
         if (this.timeline && validItems.length > 0) {
           this.timeline.fit({
@@ -877,7 +1342,7 @@ class TimelineRenderer {
       // Validate new items
       const validItems = this.validateTimelineItems(newData);
 
-      // Update dataset with smooth transition
+      // Clear existing data with smooth transition
       this.dataset.clear();
       
       if (validItems.length === 0) {
@@ -885,9 +1350,16 @@ class TimelineRenderer {
         return true;
       }
 
-      this.dataset.add(validItems);
+      // Add new items with performance optimization for large datasets
+      if (validItems.length > 50) {
+        // For large datasets, add items in batches to maintain smooth performance
+        this.addItemsInBatches(validItems);
+      } else {
+        // For smaller datasets, add all items at once
+        this.dataset.add(validItems);
+      }
 
-      // Smooth transition to new data range
+      // Smooth transition to new data range with enhanced animation (Requirement 2.3, 2.4)
       setTimeout(() => {
         if (this.timeline && validItems.length > 0) {
           this.timeline.fit({
@@ -907,6 +1379,30 @@ class TimelineRenderer {
       this.showTimelineError('Failed to update timeline: ' + error.message);
       return false;
     }
+  }
+
+  /**
+   * Add items to dataset in batches for better performance with large datasets
+   * @param {Array} items - Timeline items to add
+   */
+  addItemsInBatches(items) {
+    const batchSize = 25;
+    let currentIndex = 0;
+
+    const addBatch = () => {
+      const batch = items.slice(currentIndex, currentIndex + batchSize);
+      if (batch.length > 0) {
+        this.dataset.add(batch);
+        currentIndex += batchSize;
+
+        if (currentIndex < items.length) {
+          // Schedule next batch with small delay to maintain smooth performance
+          setTimeout(addBatch, 10);
+        }
+      }
+    };
+
+    addBatch();
   }
 
   /**
