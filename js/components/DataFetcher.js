@@ -14,14 +14,21 @@ class DataFetcher {
       // Fetch project list from main sheet
       const projects = await this.parser.parse(this.spreadsheetId);
       
-      // Validate required columns exist
+      // Validate required columns exist (completed_date is optional)
       if (projects.length > 0) {
-        const requiredColumns = ['project_id', 'project_name', 'completed_date', 'category'];
+        const requiredColumns = ['project_id', 'project_name', 'category'];
+        const optionalColumns = ['completed_date'];
         const firstProject = projects[0];
         const missingColumns = requiredColumns.filter(col => !(col in firstProject));
         
         if (missingColumns.length > 0) {
           throw new Error(`Missing required columns in main sheet: ${missingColumns.join(', ')}`);
+        }
+        
+        // Log info about optional columns that are missing
+        const missingOptionalColumns = optionalColumns.filter(col => !(col in firstProject));
+        if (missingOptionalColumns.length > 0) {
+          console.info(`Optional columns not found in main sheet: ${missingOptionalColumns.join(', ')}`);
         }
       }
       

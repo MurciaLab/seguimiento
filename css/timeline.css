@@ -491,6 +491,90 @@
   margin: 20px 0;
 }
 
+/* Enhanced User Feedback System */
+.user-feedback {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  display: none;
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+.user-feedback.success {
+  background-color: #c6f6d5;
+  border: 1px solid #9ae6b4;
+  color: #22543d;
+}
+
+.user-feedback.error {
+  background-color: #fed7d7;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+}
+
+.user-feedback.warning {
+  background-color: #fef5e7;
+  border: 1px solid #f6e05e;
+  color: #744210;
+}
+
+.user-feedback.info {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Global Loading Indicator */
+.global-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(59, 130, 246, 0.9);
+  color: white;
+  padding: 8px 16px;
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.global-loading .loading-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.global-loading .loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.global-loading .loading-message {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .no-data-message {
   padding: 20px;
   text-align: center;
@@ -1093,7 +1177,34 @@
   opacity: 1;
 }
 
-/* Responsive Design */
+/* Enhanced Responsive Design and Mobile Support */
+
+/* Tablet and small desktop (768px - 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding: 15px;
+  }
+
+  .timeline-container {
+    min-height: 350px;
+  }
+
+  .timeline-navigation-indicator {
+    padding: 10px;
+  }
+
+  .nav-controls {
+    gap: 4px;
+  }
+
+  .nav-btn {
+    min-width: 26px;
+    height: 26px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile landscape and small tablets (768px and below) */
 @media (max-width: 768px) {
   .container {
     padding: 10px;
@@ -1101,13 +1212,18 @@
 
   .project-selector {
     margin: 10px 0;
-    padding: 10px;
+    padding: 12px;
   }
 
   .selector-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+
+  .project-dropdown {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px;
   }
 
   .project-details {
@@ -1119,44 +1235,428 @@
   .timeline-container {
     margin: 10px 0;
     min-height: 300px;
+    border-radius: 6px;
   }
 
+  /* Enhanced timeline navigation for mobile */
   .timeline-navigation-indicator {
     flex-direction: column;
-    gap: 8px;
-    padding: 8px;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f8fafc;
+    border-radius: 6px;
+  }
+
+  .nav-track {
+    height: 10px;
+    border-radius: 5px;
   }
 
   .nav-controls {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 8px;
   }
 
   .nav-btn {
-    min-width: 28px;
-    height: 28px;
+    min-width: 32px;
+    height: 32px;
     font-size: 14px;
+    touch-action: manipulation; /* Improve touch responsiveness */
   }
 
+  .nav-position-text {
+    font-size: 13px;
+    min-width: 36px;
+  }
+
+  /* Mobile-optimized timeline cards */
   .timeline-card {
-    padding: 10px;
+    padding: 12px;
+    margin: 6px 0;
+    border-radius: 6px;
+  }
+
+  .card-headline {
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .card-description {
+    font-size: 14px;
+    line-height: 1.4;
   }
 
   .card-meta {
     flex-direction: column;
     align-items: flex-start;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .party-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  /* Mobile-optimized media cards */
+  .media-card {
+    padding: 12px;
+    margin: 8px 0;
+  }
+
+  .media-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .media-meta {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 4px;
+  }
+
+  .media-headline {
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .media-description {
+    font-size: 14px;
+  }
+
+  /* Mobile feedback and loading */
+  .user-feedback {
+    padding: 10px 12px;
+    font-size: 13px;
+    margin: 8px 0;
+  }
+
+  .global-loading {
+    padding: 10px 16px;
+  }
+
+  .global-loading .loading-message {
+    font-size: 13px;
+  }
+
+  /* Mobile error states */
+  .error-message {
+    padding: 12px;
+    font-size: 14px;
+    margin: 15px 0;
+  }
+
+  .no-data-message {
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  /* Mobile timeline interactions */
+  .timeline-keyboard-help {
+    display: none; /* Hide keyboard help on mobile */
+  }
+
+  .timeline-touch-indicator {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .timeline-zoom-indicator {
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    padding: 3px 6px;
   }
 }
 
+/* Mobile portrait (480px and below) */
 @media (max-width: 480px) {
+  .container {
+    padding: 8px;
+  }
+
+  .project-selector {
+    margin: 8px 0;
+    padding: 10px;
+  }
+
   .project-dropdown {
-    font-size: 14px;
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 10px;
   }
 
   .project-category,
   .project-status {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .timeline-container {
+    margin: 8px 0;
+    min-height: 280px;
+  }
+
+  /* Compact navigation for small screens */
+  .timeline-navigation-indicator {
+    padding: 8px;
+  }
+
+  .nav-controls {
+    gap: 6px;
+  }
+
+  .nav-btn {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+    padding: 2px 4px;
+  }
+
+  .nav-position-text {
     font-size: 11px;
-    padding: 3px 6px;
+    min-width: 30px;
+  }
+
+  /* Compact timeline cards */
+  .timeline-card {
+    padding: 10px;
+    margin: 4px 0;
+  }
+
+  .card-headline {
+    font-size: 14px;
+  }
+
+  .card-description {
+    font-size: 13px;
+  }
+
+  .party-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  /* Compact media cards */
+  .media-card {
+    padding: 10px;
+    margin: 6px 0;
+  }
+
+  .media-headline {
+    font-size: 14px;
+  }
+
+  .media-description {
+    font-size: 13px;
+  }
+
+  .media-type,
+  .media-date {
+    font-size: 11px;
+  }
+
+  /* Compact feedback */
+  .user-feedback {
+    padding: 8px 10px;
+    font-size: 12px;
+    margin: 6px 0;
+  }
+
+  .error-message {
+    padding: 10px;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+
+  .no-data-message {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  /* Compact loading states */
+  .loading-container {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .loading-text {
+    font-size: 13px;
+  }
+
+  .loading-spinner {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Large mobile landscape (up to 667px height) */
+@media (max-height: 667px) and (orientation: landscape) {
+  .timeline-container {
+    min-height: 250px;
+  }
+
+  .project-selector {
+    margin: 6px 0;
+    padding: 8px;
+  }
+
+  .timeline-navigation-indicator {
+    padding: 6px;
+  }
+
+  .nav-btn {
+    min-width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+}
+
+/* Touch-specific enhancements */
+@media (pointer: coarse) {
+  /* Larger touch targets */
+  .project-dropdown {
+    min-height: 44px; /* iOS recommended minimum */
+  }
+
+  .nav-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .card-link,
+  .media-link {
+    padding: 8px 4px;
+    margin: -8px -4px;
+  }
+
+  .retry-button {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+
+  /* Improve touch scrolling */
+  .timeline-container {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent text selection on touch */
+  .nav-btn,
+  .party-badge,
+  .timeline-navigation-indicator {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .loading-spinner {
+    border-width: 1px;
+  }
+
+  .timeline-card,
+  .media-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+}
+
+/* Dark mode support (if system preference is dark) */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background-color: #1a202c;
+    color: #e2e8f0;
+  }
+
+  .project-selector {
+    background-color: #2d3748;
+    border-color: #4a5568;
+  }
+
+  .project-dropdown {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+
+  .timeline-container {
+    background-color: #2d3748;
+    border-color: #4a5568;
+  }
+
+  .timeline-card,
+  .media-card {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+
+  .no-data-message {
+    color: #a0aec0;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-card,
+  .media-card,
+  .nav-btn,
+  .user-feedback {
+    transition: none;
+  }
+
+  .loading-spinner {
+    animation: none;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-spinner {
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Print styles */
+@media print {
+  .global-loading,
+  .timeline-navigation-indicator,
+  .nav-controls,
+  .timeline-keyboard-help,
+  .timeline-touch-indicator,
+  .timeline-zoom-indicator {
+    display: none !important;
+  }
+
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+
+  .timeline-container {
+    border: 1px solid #000;
+    min-height: auto;
+  }
+
+  .timeline-card,
+  .media-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
   }
 }

@@ -8,7 +8,7 @@ A static website application that fetches data from a public Google Spreadsheet 
 
 - **Timeline_System**: The complete web application that fetches and displays project news timeline data
 - **Google_Spreadsheet**: A Google Sheets document containing a main project list sheet and individual project sheets
-- **Main_Sheet**: The primary sheet containing the project directory with project_id, project_name, completed_date, and category fields
+- **Main_Sheet**: The primary sheet containing the project directory with required fields (project_id, project_name, category) and optional fields (completed_date)
 - **Project_Sheet**: Individual sheets named by project_id containing timeline events for that specific project
 - **Timeline_Visualization**: The interactive chart component that displays chronological project news data
 - **Media_Event**: An individual row from a Project_Sheet containing date_announced, news_link, headline, description, and party fields
@@ -73,7 +73,7 @@ A static website application that fetches data from a public Google Spreadsheet 
 
 #### Acceptance Criteria
 
-1. THE Timeline_System SHALL parse the Main_Sheet with columns: project_id, project_name, completed_date, category
+1. THE Timeline_System SHALL parse the Main_Sheet with required columns: project_id, project_name, category, and optional columns: completed_date
 2. THE Timeline_System SHALL parse individual Project_Sheets named by project_id with columns: date_announced, news_link, headline, description, party
 3. THE Timeline_System SHALL use project_id to link Main_Sheet entries to their corresponding Project_Sheets
 4. THE Timeline_System SHALL use the date_announced field to position Media_Events chronologically on each Project_Timeline

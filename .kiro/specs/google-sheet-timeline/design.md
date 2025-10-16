@@ -113,10 +113,10 @@ class CardRenderer {
 #### Main Sheet Schema
 ```javascript
 interface Project {
-  project_id: string;       // "1", "2", "3"
-  project_name: string;     // "Tranvía al Carmen"
-  completed_date: string;   // "" or "DD/MM/YYYY"
-  category: string;         // "Movilidad", "Parques y jardines"
+  project_id: string;       // "1", "2", "3" (required)
+  project_name: string;     // "Tranvía al Carmen" (required)
+  completed_date?: string;  // "" or "DD/MM/YYYY" (optional)
+  category: string;         // "Movilidad", "Parques y jardines" (required)
 }
 ```
 
