@@ -648,6 +648,152 @@
   font-size: 14px;
 }
 
+/* Timeline Group Styling */
+.timeline-group-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #2d3748;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #f7fafc;
+}
+
+.timeline-group-podemos .timeline-group-label {
+  background-color: #f3e8ff;
+  color: #6f2c91;
+}
+
+.timeline-group-psoe .timeline-group-label {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+.timeline-group-pp .timeline-group-label {
+  background-color: #dbeafe;
+  color: #3182ce;
+}
+
+.timeline-group-ciudadanos .timeline-group-label {
+  background-color: #fef5e7;
+  color: #ff8c00;
+}
+
+.timeline-group-vox .timeline-group-label {
+  background-color: #c6f6d5;
+  color: #38a169;
+}
+
+.timeline-group-equo .timeline-group-label {
+  background-color: #dcfce7;
+  color: #22c55e;
+}
+
+.timeline-group-podemos-equo .timeline-group-label {
+  background: linear-gradient(45deg, #f3e8ff, #dcfce7);
+  color: #553c9a;
+}
+
+.timeline-group-other .timeline-group-label {
+  background-color: #f1f5f9;
+  color: #718096;
+}
+
+/* vis-timeline custom styling */
+.vis-timeline {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+.vis-item {
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.vis-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.vis-item.vis-selected {
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  border: 2px solid #3b82f6;
+}
+
+/* Party-specific timeline item styling */
+.vis-item.party-podemos {
+  background-color: #f3e8ff;
+  border-left: 4px solid #6f2c91;
+}
+
+.vis-item.party-psoe {
+  background-color: #fed7d7;
+  border-left: 4px solid #e53e3e;
+}
+
+.vis-item.party-pp {
+  background-color: #dbeafe;
+  border-left: 4px solid #3182ce;
+}
+
+.vis-item.party-ciudadanos {
+  background-color: #fef5e7;
+  border-left: 4px solid #ff8c00;
+}
+
+.vis-item.party-vox {
+  background-color: #c6f6d5;
+  border-left: 4px solid #38a169;
+}
+
+.vis-item.party-equo {
+  background-color: #dcfce7;
+  border-left: 4px solid #22c55e;
+}
+
+.vis-item.party-podemos-equo {
+  background: linear-gradient(135deg, #f3e8ff, #dcfce7);
+  border-left: 4px solid #553c9a;
+}
+
+.vis-item.party-other {
+  background-color: #f1f5f9;
+  border-left: 4px solid #718096;
+}
+
+/* Timeline axis styling */
+.vis-time-axis {
+  border-top: 1px solid #e2e8f0;
+}
+
+.vis-text {
+  color: #4a5568;
+  font-size: 12px;
+}
+
+.vis-text.vis-major {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/* Timeline background */
+.vis-panel.vis-background {
+  background-color: #fafafa;
+}
+
+.vis-panel.vis-center {
+  background-color: white;
+}
+
+/* Group labels */
+.vis-labelset .vis-label {
+  background-color: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  color: #2d3748;
+  font-weight: 500;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {

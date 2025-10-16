@@ -10,6 +10,9 @@ class TimelineApp {
 
   async init() {
     try {
+      // Initialize timeline renderer
+      this.timelineRenderer = new TimelineRenderer('timeline-container');
+
       // Initialize project selector with callback for project changes
       this.projectSelector = new ProjectSelector('project-selector', (project) => {
         this.handleProjectSelection(project);
@@ -34,14 +37,14 @@ class TimelineApp {
   async loadProjects() {
     try {
       this.projectSelector.showLoading();
-      
+
       // Fetch project list from main sheet
       const projects = await this.dataFetcher.fetchProjectList();
-      
+
       // Populate project selector
       this.projectSelector.populateProjects(projects);
       this.projectSelector.hideLoading();
-      
+
     } catch (error) {
       this.projectSelector.showError('Failed to load projects');
       this.showError('Failed to load projects: ' + error.message);
@@ -89,7 +92,7 @@ class TimelineApp {
   async handleProjectSelection(project) {
     // Clear any existing error messages
     this.hideError();
-    
+
     if (!project) {
       // Clear timeline when no project is selected
       this.currentProject = null;
@@ -105,16 +108,16 @@ class TimelineApp {
     try {
       this.isLoading = true;
       this.currentProject = project;
-      
+
       // Show loading state immediately (Requirement 1.3 - user feedback during fetch)
       this.showTimelineLoading(true);
-      
+
       // Requirement 1.3: Fetch the corresponding Project_Sheet data
       if (this.dataFetcher && typeof this.dataFetcher.fetchProjectTimeline === 'function') {
         console.log(`Fetching timeline data for project: ${project.project_name} (ID: ${project.project_id})`);
-        
+
         const timelineData = await this.dataFetcher.fetchProjectTimeline(project.project_id);
-        
+
         // Validate that we received data for the correct project
         if (!timelineData || timelineData.length === 0) {
           console.warn(`No timeline data found for project ${project.project_id}`);
@@ -122,27 +125,31 @@ class TimelineApp {
         } else {
           // Requirement 1.4: Display Project_Timeline showing Media_Events for selected project only
           if (this.timelineRenderer) {
-            this.timelineRenderer.updateData(timelineData);
-            console.log(`Rendered ${timelineData.length} media events for project ${project.project_name}`);
+            const success = this.timelineRenderer.updateData(timelineData);
+            if (success) {
+              console.log(`Rendered ${timelineData.length} media events for project ${project.project_name}`);
+            } else {
+              this.showPlaceholderTimeline(project, timelineData.length);
+            }
           } else {
             this.showPlaceholderTimeline(project, timelineData.length);
           }
         }
       } else {
         // Show placeholder timeline for testing when DataFetcher is not available
-        console.log(`DataFetcher not available, showing placeholder for project: ${project.project_name}`);
-        this.showPlaceholderTimeline(project);
+        console.log(`DataFetcher not available, showing test timeline for project: ${project.project_name}`);
+        this.showTestTimeline(project);
       }
-      
+
       this.showTimelineLoading(false);
-      
+
     } catch (error) {
       this.showTimelineLoading(false);
       console.error(`Error loading timeline for project ${project.project_name}:`, error);
-      
+
       // Show user-friendly error message
       this.showError(`Failed to load timeline for "${project.project_name}". Please try again.`);
-      
+
       // Show error state in timeline container
       this.showTimelineError(project, error.message);
     } finally {
@@ -153,7 +160,7 @@ class TimelineApp {
   showPlaceholderTimeline(project, eventCount = null) {
     const timelineContainer = document.getElementById('timeline-container');
     const eventInfo = eventCount !== null ? `<p>Media Events: ${eventCount}</p>` : '';
-    
+
     timelineContainer.innerHTML = `
       <div class="no-data-message">
         <h3>Timeline for: ${project.project_name}</h3>
@@ -189,18 +196,113 @@ class TimelineApp {
     `;
   }
 
+  showTestTimeline(project) {
+    // Create test timeline data to demonstrate the timeline functionality
+    const testTimelineData = this.generateTestTimelineData(project);
+
+    if (this.timelineRenderer && testTimelineData.length > 0) {
+      const success = this.timelineRenderer.updateData(testTimelineData);
+      if (success) {
+        console.log(`Rendered test timeline with ${testTimelineData.length} items for project ${project.project_name}`);
+      } else {
+        this.showPlaceholderTimeline(project, testTimelineData.length);
+      }
+    } else {
+      this.showPlaceholderTimeline(project);
+    }
+  }
+
+  generateTestTimelineData(project) {
+    // Generate sample timeline data for testing
+    const baseDate = new Date('2023-01-01');
+    const testEvents = [
+      {
+        headline: `${project.project_name} - Initial Announcement`,
+        description: `The city announces plans for the ${project.project_name} project in the ${project.category} category.`,
+        party: 'PSOE',
+        news_link: 'https://example.com/news1'
+      },
+      {
+        headline: `Opposition Response to ${project.project_name}`,
+        description: `Political opposition raises concerns about the proposed ${project.project_name} project.`,
+        party: 'PP',
+        news_link: 'https://twitter.com/example/status/123'
+      },
+      {
+        headline: `Community Meeting on ${project.project_name}`,
+        description: `Local community holds public meeting to discuss the ${project.project_name} project.`,
+        party: 'Podemos',
+        news_link: 'https://example.com/news2'
+      },
+      {
+        headline: `Budget Approval for ${project.project_name}`,
+        description: `City council approves budget allocation for the ${project.project_name} project.`,
+        party: 'PSOE',
+        news_link: 'https://example.com/news3'
+      },
+      {
+        headline: `Construction Begins on ${project.project_name}`,
+        description: `Construction work officially begins on the ${project.project_name} project.`,
+        party: 'Ciudadanos',
+        news_link: 'https://example.com/news4'
+      }
+    ];
+
+    // Convert to timeline format using CardRenderer if available
+    return testEvents.map((event, index) => {
+      const eventDate = new Date(baseDate.getTime() + (index * 30 * 24 * 60 * 60 * 1000)); // 30 days apart
+
+      let content = `<div class="timeline-card party-${event.party.toLowerCase()}">`;
+
+      if (typeof CardRenderer !== 'undefined') {
+        // Use CardRenderer if available
+        const mediaEvent = {
+          date_announced: eventDate.toLocaleDateString('en-GB'),
+          news_link: event.news_link,
+          headline: event.headline,
+          description: event.description,
+          party: event.party
+        };
+        content = CardRenderer.createNewsCard(mediaEvent);
+      } else {
+        // Fallback simple card
+        content += `
+          <div class="card-headline">${event.headline}</div>
+          <div class="card-description">${event.description}</div>
+          <div class="card-meta">
+            <span class="party-badge party-${event.party.toLowerCase()}">${event.party}</span>
+            <span class="card-date">${eventDate.toLocaleDateString()}</span>
+          </div>
+        `;
+        content += `</div>`;
+      }
+
+      return {
+        id: `test-${project.project_id}-${index}`,
+        start: eventDate,
+        content: content,
+        party: event.party,
+        type: 'box'
+      };
+    });
+  }
+
   clearTimeline() {
-    const timelineContainer = document.getElementById('timeline-container');
-    timelineContainer.innerHTML = `
-      <div class="no-data-message">
-        Select a project to view its timeline
-      </div>
-    `;
+    if (this.timelineRenderer) {
+      this.timelineRenderer.clearContainer();
+    } else {
+      const timelineContainer = document.getElementById('timeline-container');
+      timelineContainer.innerHTML = `
+        <div class="no-data-message">
+          Select a project to view its timeline
+        </div>
+      `;
+    }
   }
 
   showTimelineLoading(show) {
     const timelineContainer = document.getElementById('timeline-container');
-    
+
     if (show) {
       const projectName = this.currentProject ? this.currentProject.project_name : 'project';
       timelineContainer.innerHTML = `
@@ -218,7 +320,7 @@ class TimelineApp {
     const errorElement = document.getElementById('error-message');
     errorElement.textContent = message;
     errorElement.style.display = 'block';
-    
+
     // Auto-hide error after 5 seconds
     setTimeout(() => {
       errorElement.style.display = 'none';
