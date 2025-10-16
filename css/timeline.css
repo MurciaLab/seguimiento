@@ -206,25 +206,175 @@
 .party-badge.vox { background-color: #38a169; }
 .party-badge.default { background-color: #718096; }
 
+/* Media Cards - Enhanced styling for different media types */
+.media-card {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 8px 0;
+  border: 1px solid #e2e8f0;
+  transition: box-shadow 0.2s ease;
+}
+
+.media-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.media-card.error {
+  background-color: #fed7d7;
+  border-color: #feb2b2;
+  color: #c53030;
+}
+
+/* Media-specific card styling */
+.media-card.media-twitter {
+  border-left: 4px solid #1da1f2;
+}
+
+.media-card.media-news {
+  border-left: 4px solid #2d3748;
+}
+
+.media-card.media-youtube {
+  border-left: 4px solid #ff0000;
+}
+
+.media-card.media-facebook {
+  border-left: 4px solid #1877f2;
+}
+
+.media-card.media-instagram {
+  border-left: 4px solid #e4405f;
+}
+
+.media-card.media-unknown {
+  border-left: 4px solid #718096;
+}
+
+/* Media Card Header */
+.media-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.media-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.media-type {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.media-date {
+  font-size: 12px;
+  color: #718096;
+  font-weight: 500;
+}
+
 /* Media Type Icons */
 .media-icon {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
+  font-size: 18px;
+  margin-right: 8px;
   vertical-align: middle;
 }
 
-.media-icon.twitter::before {
-  content: '🐦';
+.media-icon-twitter { color: #1da1f2; }
+.media-icon-news { color: #2d3748; }
+.media-icon-youtube { color: #ff0000; }
+.media-icon-facebook { color: #1877f2; }
+.media-icon-instagram { color: #e4405f; }
+.media-icon-unknown { color: #718096; }
+
+/* Media Card Content */
+.media-content {
+  margin-bottom: 12px;
 }
 
-.media-icon.news::before {
-  content: '📰';
+.media-headline {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 8px 0;
+  color: #2d3748;
 }
 
-.media-icon.default::before {
-  content: '🔗';
+.media-headline a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.media-headline a:hover {
+  color: #3182ce;
+  text-decoration: underline;
+}
+
+.media-description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a5568;
+  margin: 0;
+}
+
+/* Media Card Footer */
+.media-footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.media-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #3182ce;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.media-link:hover {
+  color: #2c5aa0;
+  text-decoration: underline;
+}
+
+/* Party Badges - Enhanced */
+.party-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.party-badge.party-podemos { background-color: #6f2c91; }
+.party-badge.party-psoe { background-color: #e53e3e; }
+.party-badge.party-pp { background-color: #3182ce; }
+.party-badge.party-ciudadanos { background-color: #ff8c00; }
+.party-badge.party-vox { background-color: #38a169; }
+.party-badge.party-equo { background-color: #22c55e; }
+.party-badge.party-podemos-equo { background: linear-gradient(45deg, #6f2c91, #22c55e); }
+
+/* Default party styling for unknown parties */
+.party-badge:not([class*="party-"]) {
+  background-color: #718096;
 }
 
 /* Card Content */
