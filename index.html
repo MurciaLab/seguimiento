@@ -2,13 +2,55 @@
 <html>
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Sheet Timeline</title>
+
+  <!-- CSS Dependencies -->
+  <link rel="stylesheet" href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" />
+  <link rel="stylesheet" href="css/timeline.css" />
+
+  <!-- JavaScript Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/public-google-sheets-parser@latest"></script>
+  <script src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+
+  <!-- Component Scripts -->
+  <script src="js/components/DataFetcher.js"></script>
+  <script src="js/components/TimelineRenderer.js"></script>
+  <script src="js/components/MediaTypeHandler.js"></script>
+  <script src="js/components/CardRenderer.js"></script>
+
+  <!-- Main Application Scripts -->
+  <script src="js/app.js"></script>
   <script src="proposals.js"></script>
 </head>
 
 <body>
-  <div>
-    <ul id="propuestas"></ul>
+  <div class="container">
+    <!-- Project Selector -->
+    <div class="project-selector">
+      <label for="project-select">Select a Project:</label>
+      <select id="project-select">
+        <option value="">Loading projects...</option>
+      </select>
+      <span id="loading-indicator" class="loading" style="display: none;"></span>
+    </div>
+
+    <!-- Timeline Container -->
+    <div id="timeline-container" class="timeline-container">
+      <div class="no-data-message">
+        Select a project to view its timeline
+      </div>
+    </div>
+
+    <!-- Error Display -->
+    <div id="error-message" class="error-message" style="display: none;"></div>
+
+    <!-- Original Proposals List (for reference) -->
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">
+      <h3>Original Proposals List</h3>
+      <ul id="propuestas"></ul>
+    </div>
   </div>
 </body>
 

@@ -1,0 +1,210 @@
+/* Timeline and Project Selector Styling */
+
+/* Project Selector Styles */
+.project-selector {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.project-selector label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.project-selector select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+}
+
+.project-selector select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Loading States */
+.loading {
+  display: inline-block;
+  margin-left: 10px;
+  color: #666;
+  font-style: italic;
+}
+
+.loading::after {
+  content: '...';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
+/* Timeline Container */
+.timeline-container {
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  min-height: 400px;
+}
+
+/* Timeline Cards - Party-based styling */
+.timeline-card {
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 4px 0;
+}
+
+.timeline-card.party-podemos {
+  border-left-color: #6f2c91;
+}
+
+.timeline-card.party-psoe {
+  border-left-color: #e53e3e;
+}
+
+.timeline-card.party-pp {
+  border-left-color: #3182ce;
+}
+
+.timeline-card.party-ciudadanos {
+  border-left-color: #ff8c00;
+}
+
+.timeline-card.party-vox {
+  border-left-color: #38a169;
+}
+
+.timeline-card.party-default {
+  border-left-color: #718096;
+}
+
+/* Party Badges */
+.party-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  margin-right: 8px;
+}
+
+.party-badge.podemos { background-color: #6f2c91; }
+.party-badge.psoe { background-color: #e53e3e; }
+.party-badge.pp { background-color: #3182ce; }
+.party-badge.ciudadanos { background-color: #ff8c00; }
+.party-badge.vox { background-color: #38a169; }
+.party-badge.default { background-color: #718096; }
+
+/* Media Type Icons */
+.media-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.media-icon.twitter::before {
+  content: '🐦';
+}
+
+.media-icon.news::before {
+  content: '📰';
+}
+
+.media-icon.default::before {
+  content: '🔗';
+}
+
+/* Card Content */
+.card-headline {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2d3748;
+  line-height: 1.3;
+}
+
+.card-description {
+  color: #4a5568;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #718096;
+  margin-top: 8px;
+}
+
+.card-date {
+  font-weight: 500;
+}
+
+.card-link {
+  color: #3182ce;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+/* Error States */
+.error-message {
+  padding: 15px;
+  background-color: #fed7d7;
+  border: 1px solid #feb2b2;
+  border-radius: 6px;
+  color: #c53030;
+  margin: 20px 0;
+}
+
+.no-data-message {
+  padding: 20px;
+  text-align: center;
+  color: #718096;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .project-selector {
+    margin: 10px 0;
+    padding: 10px;
+  }
+  
+  .timeline-container {
+    margin: 10px 0;
+    min-height: 300px;
+  }
+  
+  .timeline-card {
+    padding: 10px;
+  }
+  
+  .card-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
