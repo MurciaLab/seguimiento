@@ -3,7 +3,7 @@ class DataFetcher {
   constructor(spreadsheetId) {
     this.spreadsheetId = spreadsheetId;
     this.parser = new PublicGoogleSheetsParser();
-    this.mainSheetId = '885988754'; // Main sheet ID from existing proposals.js
+    this.mainSheetId = '885988754';
   }
 
   async fetchProjectList() {
