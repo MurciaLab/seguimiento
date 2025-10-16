@@ -139,10 +139,24 @@
 }
 
 @keyframes dots {
-  0%, 20% { content: ''; }
-  40% { content: '.'; }
-  60% { content: '..'; }
-  80%, 100% { content: '...'; }
+
+  0%,
+  20% {
+    content: '';
+  }
+
+  40% {
+    content: '.';
+  }
+
+  60% {
+    content: '..';
+  }
+
+  80%,
+  100% {
+    content: '...';
+  }
 }
 
 /* Timeline Container */
@@ -199,12 +213,29 @@
   margin-right: 8px;
 }
 
-.party-badge.podemos { background-color: #6f2c91; }
-.party-badge.psoe { background-color: #e53e3e; }
-.party-badge.pp { background-color: #3182ce; }
-.party-badge.ciudadanos { background-color: #ff8c00; }
-.party-badge.vox { background-color: #38a169; }
-.party-badge.default { background-color: #718096; }
+.party-badge.podemos {
+  background-color: #6f2c91;
+}
+
+.party-badge.psoe {
+  background-color: #e53e3e;
+}
+
+.party-badge.pp {
+  background-color: #3182ce;
+}
+
+.party-badge.ciudadanos {
+  background-color: #ff8c00;
+}
+
+.party-badge.vox {
+  background-color: #38a169;
+}
+
+.party-badge.default {
+  background-color: #718096;
+}
 
 /* Media Cards - Enhanced styling for different media types */
 .media-card {
@@ -291,12 +322,29 @@
   vertical-align: middle;
 }
 
-.media-icon-twitter { color: #1da1f2; }
-.media-icon-news { color: #2d3748; }
-.media-icon-youtube { color: #ff0000; }
-.media-icon-facebook { color: #1877f2; }
-.media-icon-instagram { color: #e4405f; }
-.media-icon-unknown { color: #718096; }
+.media-icon-twitter {
+  color: #1da1f2;
+}
+
+.media-icon-news {
+  color: #2d3748;
+}
+
+.media-icon-youtube {
+  color: #ff0000;
+}
+
+.media-icon-facebook {
+  color: #1877f2;
+}
+
+.media-icon-instagram {
+  color: #e4405f;
+}
+
+.media-icon-unknown {
+  color: #718096;
+}
 
 /* Media Card Content */
 .media-content {
@@ -364,13 +412,33 @@
   white-space: nowrap;
 }
 
-.party-badge.party-podemos { background-color: #6f2c91; }
-.party-badge.party-psoe { background-color: #e53e3e; }
-.party-badge.party-pp { background-color: #3182ce; }
-.party-badge.party-ciudadanos { background-color: #ff8c00; }
-.party-badge.party-vox { background-color: #38a169; }
-.party-badge.party-equo { background-color: #22c55e; }
-.party-badge.party-podemos-equo { background: linear-gradient(45deg, #6f2c91, #22c55e); }
+.party-badge.party-podemos {
+  background-color: #6f2c91;
+}
+
+.party-badge.party-psoe {
+  background-color: #e53e3e;
+}
+
+.party-badge.party-pp {
+  background-color: #3182ce;
+}
+
+.party-badge.party-ciudadanos {
+  background-color: #ff8c00;
+}
+
+.party-badge.party-vox {
+  background-color: #38a169;
+}
+
+.party-badge.party-equo {
+  background-color: #22c55e;
+}
+
+.party-badge.party-podemos-equo {
+  background: linear-gradient(45deg, #6f2c91, #22c55e);
+}
 
 /* Default party styling for unknown parties */
 .party-badge:not([class*="party-"]) {
@@ -468,8 +536,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-text {
@@ -536,38 +609,77 @@
   color: #4a5568;
 }
 
+/* Incomplete Event Styling */
+.timeline-card.incomplete-event {
+  border-left: 4px solid #f6ad55;
+  background-color: #fffaf0;
+  border-color: #fbd38d;
+}
+
+.timeline-card.incomplete-event .card-headline.incomplete {
+  color: #c05621;
+  font-style: italic;
+}
+
+.timeline-card.incomplete-event .card-description.incomplete {
+  color: #9c4221;
+  font-style: italic;
+}
+
+.timeline-card.incomplete-event .card-footer.incomplete {
+  border-top: 1px solid #fbd38d;
+  background-color: #fef5e7;
+  padding: 8px 12px;
+  margin: 12px -16px -16px -16px;
+  border-radius: 0 0 8px 8px;
+}
+
+.incomplete-notice {
+  font-size: 12px;
+  color: #c05621;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.incomplete-notice::before {
+  content: '⚠️';
+  font-size: 14px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
     padding: 10px;
   }
-  
+
   .project-selector {
     margin: 10px 0;
     padding: 10px;
   }
-  
+
   .selector-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .project-details {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .timeline-container {
     margin: 10px 0;
     min-height: 300px;
   }
-  
+
   .timeline-card {
     padding: 10px;
   }
-  
+
   .card-meta {
     flex-direction: column;
     align-items: flex-start;
@@ -579,7 +691,7 @@
   .project-dropdown {
     font-size: 14px;
   }
-  
+
   .project-category,
   .project-status {
     font-size: 11px;
