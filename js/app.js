@@ -400,6 +400,12 @@ class TimelineApp {
           </div>
         </div>
       `;
+    } else {
+      // Clear loading state - the timeline content will be set by other methods
+      // Don't clear the container here as it might overwrite the actual timeline content
+      // Just ensure any loading spinners are removed
+      const loadingContainers = timelineContainer.querySelectorAll('.loading-container');
+      loadingContainers.forEach(container => container.remove());
     }
   }
 
