@@ -92,6 +92,7 @@ class DataFetcher {
           start: parsedDate,
           content: this.createEventContent(event),
           title: event.headline || 'Media Event', // Minimal tooltip
+          party: event.party, // Keep original party name for processing
           group: event.party || 'Unknown',
           className: `party-${(event.party || 'unknown').toLowerCase().replace(/\s+/g, '-')}`,
           type: 'box'
