@@ -178,6 +178,97 @@
   margin: 4px 0;
 }
 
+/* Override vis-timeline item sizing */
+.vis-item.vis-box {
+  width: 200px !important;
+  max-width: 200px !important;
+  min-width: 200px !important;
+  white-space: initial !important;
+}
+
+.vis-item .vis-item-content {
+  width: 200px !important;
+  max-width: 200px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  white-space: initial !important;
+}
+
+/* Compact Timeline Cards */
+.timeline-card-compact {
+  padding: 8px 10px;
+  border-radius: 4px;
+  border-left: 3px solid #718096;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.3;
+  width: 200px;
+  max-width: 200px;
+  box-sizing: border-box;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: initial !important;
+}
+
+.card-title-compact {
+  color: #2d3748;
+  font-size: 13px;
+  line-height: 1.3;
+  margin: 0 0 12px 0 !important;
+  width: 180px;
+  max-width: 180px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  white-space: initial !important;
+}
+
+.card-title-compact strong {
+  font-weight: 700;
+}
+
+
+
+.card-description-compact {
+  color: #4a5568;
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 0 0 12px 0 !important;
+  width: 180px;
+  max-width: 180px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  white-space: initial !important;
+}
+
+.card-footer-compact {
+  margin-top: 0 !important;
+  text-align: right;
+  padding-top: 4px !important;
+}
+
+.card-link-compact {
+  color: #3182ce !important;
+  text-decoration: none !important;
+  font-size: 32px !important;
+  padding: 4px 6px !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s ease;
+  line-height: 1 !important;
+  display: inline-block !important;
+}
+
+.card-link-compact:hover {
+  background-color: #e6f3ff !important;
+  transform: scale(1.1) !important;
+}
+
 .timeline-card.party-podemos {
   border-left-color: #6f2c91;
 }
@@ -201,6 +292,42 @@
 .timeline-card.party-default {
   border-left-color: #718096;
 }
+
+/* Compact Timeline Cards - Party Colors */
+.timeline-card-compact.party-podemos {
+  border-left-color: #6f2c91;
+}
+
+.timeline-card-compact.party-psoe {
+  border-left-color: #e53e3e;
+}
+
+.timeline-card-compact.party-pp {
+  border-left-color: #3182ce;
+}
+
+.timeline-card-compact.party-ciudadanos {
+  border-left-color: #ff8c00;
+}
+
+.timeline-card-compact.party-vox {
+  border-left-color: #38a169;
+}
+
+.timeline-card-compact.party-equo {
+  border-left-color: #22c55e;
+}
+
+.timeline-card-compact.party-podemos-equo {
+  border-left-color: #553c9a;
+}
+
+.timeline-card-compact.party-other,
+.timeline-card-compact.party-unknown {
+  border-left-color: #718096;
+}
+
+
 
 /* Party Badges */
 .party-badge {
@@ -236,6 +363,8 @@
 .party-badge.default {
   background-color: #718096;
 }
+
+
 
 /* Media Cards - Enhanced styling for different media types */
 .media-card {
@@ -532,6 +661,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1222,7 +1352,8 @@
   }
 
   .project-dropdown {
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 16px;
+    /* Prevent zoom on iOS */
     padding: 12px;
   }
 
@@ -1262,7 +1393,8 @@
     min-width: 32px;
     height: 32px;
     font-size: 14px;
-    touch-action: manipulation; /* Improve touch responsiveness */
+    touch-action: manipulation;
+    /* Improve touch responsiveness */
   }
 
   .nav-position-text {
@@ -1355,7 +1487,8 @@
 
   /* Mobile timeline interactions */
   .timeline-keyboard-help {
-    display: none; /* Hide keyboard help on mobile */
+    display: none;
+    /* Hide keyboard help on mobile */
   }
 
   .timeline-touch-indicator {
@@ -1383,7 +1516,8 @@
   }
 
   .project-dropdown {
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 16px;
+    /* Prevent zoom on iOS */
     padding: 10px;
   }
 
@@ -1515,9 +1649,11 @@
 
 /* Touch-specific enhancements */
 @media (pointer: coarse) {
+
   /* Larger touch targets */
   .project-dropdown {
-    min-height: 44px; /* iOS recommended minimum */
+    min-height: 44px;
+    /* iOS recommended minimum */
   }
 
   .nav-btn {
@@ -1553,7 +1689,8 @@
 }
 
 /* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
   .loading-spinner {
     border-width: 1px;
   }
@@ -1601,6 +1738,7 @@
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
+
   .timeline-card,
   .media-card,
   .nav-btn,
@@ -1626,6 +1764,7 @@
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -1634,6 +1773,7 @@
 
 /* Print styles */
 @media print {
+
   .global-loading,
   .timeline-navigation-indicator,
   .nav-controls,

@@ -4,7 +4,7 @@ class DataFetcher {
     this.spreadsheetId = spreadsheetId;
     this.parser = new PublicGoogleSheetsParser();
     this.mainSheetId = '885988754';
-    
+
     // Configure parser to use formatted data from spreadsheet
     this.parser.setOption({ useFormat: true });
   }
@@ -13,28 +13,28 @@ class DataFetcher {
     try {
       // Configure parser for main sheet
       this.parser.setOption({ sheetId: this.mainSheetId });
-      
+
       // Fetch project list from main sheet
       const projects = await this.parser.parse(this.spreadsheetId);
-      
+
       // Validate required columns exist (completed_date is optional)
       if (projects.length > 0) {
         const requiredColumns = ['project_id', 'project_name', 'category'];
         const optionalColumns = ['completed_date'];
         const firstProject = projects[0];
         const missingColumns = requiredColumns.filter(col => !(col in firstProject));
-        
+
         if (missingColumns.length > 0) {
           throw new Error(`Missing required columns in main sheet: ${missingColumns.join(', ')}`);
         }
-        
+
         // Log info about optional columns that are missing
         const missingOptionalColumns = optionalColumns.filter(col => !(col in firstProject));
         if (missingOptionalColumns.length > 0) {
           console.info(`Optional columns not found in main sheet: ${missingOptionalColumns.join(', ')}`);
         }
       }
-      
+
       return projects;
     } catch (error) {
       console.error('Error fetching project list:', error);
@@ -46,36 +46,36 @@ class DataFetcher {
     try {
       // Create new parser instance for project sheet
       const projectParser = new PublicGoogleSheetsParser();
-      
+
       // Configure parser for project-specific sheet using project_id as sheet name
-      projectParser.setOption({ 
+      projectParser.setOption({
         sheetName: projectId,
         useFormat: true  // Get formatted data from spreadsheet
       });
-      
+
       // Fetch timeline data from project sheet
       const timelineData = await projectParser.parse(this.spreadsheetId);
-      
+
       // Validate required columns exist
       if (timelineData.length > 0) {
         const requiredColumns = ['date_announced', 'news_link', 'headline', 'description', 'party'];
         const firstEvent = timelineData[0];
         const missingColumns = requiredColumns.filter(col => !(col in firstEvent));
-        
+
         if (missingColumns.length > 0) {
           throw new Error(`Missing required columns in project sheet ${projectId}: ${missingColumns.join(', ')}`);
         }
       }
-      
+
       return timelineData;
     } catch (error) {
       console.error(`Error fetching timeline for project ${projectId}:`, error);
-      
+
       // Handle case where project sheet doesn't exist
       if (error.message.includes('Unable to parse') || error.message.includes('not found')) {
         throw new Error(`Project sheet "${projectId}" does not exist or is not accessible`);
       }
-      
+
       throw new Error(`Failed to fetch timeline for project ${projectId}: ${error.message}`);
     }
   }
@@ -85,7 +85,7 @@ class DataFetcher {
       try {
         // Parse date from DD/MM/YYYY format
         const parsedDate = this.parseDate(event.date_announced);
-        
+
         // Create timeline item in vis-timeline format
         return {
           id: `event_${index}`,
@@ -120,7 +120,7 @@ class DataFetcher {
       const year = parseInt(ddmmyyyyMatch[3], 10);
 
       const date = new Date(year, month, day);
-      
+
       // Verify the date was created correctly (handles invalid dates like 31/02/2020)
       if (date.getDate() !== day || date.getMonth() !== month || date.getFullYear() !== year) {
         throw new Error(`Invalid date: ${dateString}`);
@@ -139,7 +139,7 @@ class DataFetcher {
 
       if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
         const date = new Date(year, month, day);
-        
+
         if (date.getDate() === day && date.getMonth() === month && date.getFullYear() === year) {
           return date;
         }
@@ -152,9 +152,9 @@ class DataFetcher {
       const year = parseInt(isoMatch[1], 10);
       const month = parseInt(isoMatch[2], 10) - 1;
       const day = parseInt(isoMatch[3], 10);
-      
+
       const date = new Date(year, month, day);
-      
+
       if (date.getDate() === day && date.getMonth() === month && date.getFullYear() === year) {
         return date;
       }
@@ -170,22 +170,30 @@ class DataFetcher {
   }
 
   createEventContent(event) {
-    // Create basic HTML content for timeline card
-    // This will be enhanced by CardRenderer in later tasks
+    // Create compact HTML content for timeline card
     const headline = event.headline || 'No headline';
     const description = event.description || 'No description available';
     const party = event.party || 'Unknown';
     const newsLink = event.news_link || '#';
 
+    // Get party class for styling
+    const partyClass = party ? `party-${party.toLowerCase().replace(/\s+/g, '-')}` : 'party-other';
+
+    // Truncate description to keep cards compact
+    const truncatedDescription = description.length > 160
+      ? description.substring(0, 160).trim() + '...'
+      : description;
+
     return `
-      <div class="timeline-card">
-        <div class="card-header">
-          <h4 class="card-title">${this.escapeHtml(headline)}</h4>
-          <span class="party-badge party-${party.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(party)}</span>
+      <div class="timeline-card-compact ${partyClass}" style="background-color: white; padding: 8px 10px;">
+        <div style="margin-bottom: 15px; color: #2d3748; font-size: 13px; font-weight: bold;">
+          <strong>${this.escapeHtml(headline)}</strong>
         </div>
-        <div class="card-body">
-          <p class="card-description">${this.escapeHtml(description)}</p>
-          <a href="${this.escapeHtml(newsLink)}" target="_blank" class="card-link">View Source</a>
+        <div style="margin-bottom: 15px; color: #4a5568; font-size: 11px; line-height: 1.4;">
+          ${this.escapeHtml(truncatedDescription)}
+        </div>
+        <div style="text-align: right; padding-top: 8px;">
+          <a href="${this.escapeHtml(newsLink)}" target="_blank" style="font-size: 36px; text-decoration: none; color: #3182ce; padding: 6px;">📰</a>
         </div>
       </div>
     `;
