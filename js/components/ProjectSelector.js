@@ -10,15 +10,25 @@ class ProjectSelector {
     this.projectCategory = document.getElementById('project-category');
     this.projectStatus = document.getElementById('project-status');
     this.loadingIndicator = document.getElementById('loading-indicator');
-    
+
     this.onProjectChange = onProjectChange;
     this.projects = [];
     this.selectedProject = null;
-    
+
+    if (!this.selectElement) {
+      console.error('ProjectSelector: project-select element not found');
+      return;
+    }
+
     this.init();
   }
 
   init() {
+    if (!this.selectElement) {
+      console.error('Cannot initialize ProjectSelector: selectElement is null');
+      return;
+    }
+
     // Add event listener for project selection changes
     this.selectElement.addEventListener('change', (event) => {
       this.handleProjectSelection(event.target.value);
@@ -30,36 +40,41 @@ class ProjectSelector {
    * @param {Array} projects - Array of project objects from main sheet
    */
   populateProjects(projects) {
+    if (!this.selectElement) {
+      console.error('Cannot populate projects: selectElement is null');
+      return;
+    }
+
     this.projects = projects;
     this.selectElement.innerHTML = '';
-    
+
     // Add default option
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
     defaultOption.textContent = 'Select a project...';
     this.selectElement.appendChild(defaultOption);
-    
+
     // Group projects by category
     const projectsByCategory = this.groupProjectsByCategory(projects);
-    
+
     // Create optgroups for each category
     Object.keys(projectsByCategory).sort().forEach(category => {
       const optgroup = document.createElement('optgroup');
       optgroup.label = category;
-      
+
       projectsByCategory[category].forEach(project => {
         const option = document.createElement('option');
-        option.value = project.project_id;
+        option.value = String(project.project_id);
         option.textContent = this.formatProjectOptionText(project);
-        
+
         // Add completion status to option text
         if (project.completed_date) {
           option.textContent += ' ✓';
         }
-        
+
         optgroup.appendChild(option);
       });
-      
+
       this.selectElement.appendChild(optgroup);
     });
   }
@@ -71,7 +86,7 @@ class ProjectSelector {
    */
   groupProjectsByCategory(projects) {
     const grouped = {};
-    
+
     projects.forEach(project => {
       const category = project.category || 'Other';
       if (!grouped[category]) {
@@ -79,12 +94,12 @@ class ProjectSelector {
       }
       grouped[category].push(project);
     });
-    
+
     // Sort projects within each category by name
     Object.keys(grouped).forEach(category => {
       grouped[category].sort((a, b) => a.project_name.localeCompare(b.project_name));
     });
-    
+
     return grouped;
   }
 
@@ -111,12 +126,12 @@ class ProjectSelector {
       return;
     }
 
-    // Find selected project
-    this.selectedProject = this.projects.find(p => p.project_id === projectId);
-    
+    // Find selected project (ensure string comparison)
+    this.selectedProject = this.projects.find(p => String(p.project_id) === String(projectId));
+
     if (this.selectedProject) {
       this.showProjectInfo(this.selectedProject);
-      
+
       // Notify parent component of selection change
       if (this.onProjectChange) {
         this.onProjectChange(this.selectedProject);
@@ -131,12 +146,12 @@ class ProjectSelector {
   showProjectInfo(project) {
     // Update category display
     this.projectCategory.textContent = project.category || 'Uncategorized';
-    
+
     // Update status display
     const status = this.determineProjectStatus(project);
     this.projectStatus.textContent = status.text;
     this.projectStatus.className = `project-status ${status.class}`;
-    
+
     // Show project info container
     this.projectInfo.style.display = 'block';
   }

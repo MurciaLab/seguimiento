@@ -17,10 +17,10 @@ class TimelineApp {
   async init() {
     try {
       console.log('Initializing Timeline Application...');
-      
+
       // Set application state
       this.appState.initialized = false;
-      
+
       // Initialize timeline renderer first
       this.initializeTimelineRenderer();
 
@@ -422,7 +422,7 @@ class TimelineApp {
    */
   showUserFeedback(type, message, duration = 5000) {
     let feedbackElement = document.getElementById('user-feedback');
-    
+
     if (!feedbackElement) {
       feedbackElement = this.createFeedbackElement();
     }
@@ -457,7 +457,7 @@ class TimelineApp {
     // Insert after error message element or at the beginning of container
     const errorElement = document.getElementById('error-message');
     const container = document.getElementById('app-container');
-    
+
     if (errorElement && errorElement.parentElement) {
       errorElement.parentElement.insertBefore(feedbackElement, errorElement.nextSibling);
     } else if (container) {
@@ -476,7 +476,7 @@ class TimelineApp {
    */
   showLoadingIndicator(show, message = 'Loading...') {
     let loadingElement = document.getElementById('global-loading');
-    
+
     if (!loadingElement) {
       loadingElement = this.createLoadingElement();
     }
@@ -579,7 +579,7 @@ class TimelineApp {
       hasData: false,
       currentView: 'selector'
     };
-    
+
     // Clear UI
     this.clearTimeline();
     if (this.projectSelector) {
@@ -596,9 +596,9 @@ class TimelineApp {
     if (!spreadsheetId || typeof spreadsheetId !== 'string') {
       throw new Error('Invalid spreadsheet ID provided');
     }
-    
+
     this.spreadsheetId = spreadsheetId;
-    
+
     // Reinitialize data fetcher with new spreadsheet ID
     if (typeof DataFetcher !== 'undefined') {
       this.dataFetcher = new DataFetcher(this.spreadsheetId);
@@ -617,19 +617,19 @@ class TimelineApp {
 
     try {
       this.showTimelineLoading(true);
-      
+
       if (this.dataFetcher) {
         await this.loadProjects();
-        
+
         // Reload current project if one is selected
         if (this.currentProject) {
           await this.handleProjectSelection(this.currentProject);
         }
       }
-      
+
       this.showTimelineLoading(false);
       console.log('Data refreshed successfully');
-      
+
     } catch (error) {
       this.showTimelineLoading(false);
       console.error('Failed to refresh data:', error);
@@ -697,8 +697,8 @@ function setupGlobalEventListeners() {
     console.error('JavaScript error:', event.error);
     if (timelineApp && event.error && event.error.message) {
       // Only show user feedback for non-trivial errors
-      if (!event.error.message.includes('Script error') && 
-          !event.error.message.includes('Non-Error promise rejection')) {
+      if (!event.error.message.includes('Script error') &&
+        !event.error.message.includes('Non-Error promise rejection')) {
         timelineApp.showUserFeedback('error', 'A technical error occurred. Please refresh the page if problems persist.');
       }
     }
@@ -730,27 +730,27 @@ function setupGlobalEventListeners() {
 function setupMobileEnhancements() {
   // Detect mobile device
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-                   (window.innerWidth <= 768);
+    (window.innerWidth <= 768);
 
   if (isMobile) {
     console.log('Mobile device detected, applying mobile enhancements');
-    
+
     // Add mobile-specific CSS class
     document.body.classList.add('mobile-device');
-    
+
     // Prevent zoom on input focus (iOS)
     const viewport = document.querySelector('meta[name="viewport"]');
     if (viewport) {
-      viewport.setAttribute('content', 
+      viewport.setAttribute('content',
         'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
     }
-    
+
     // Add touch-friendly interactions
     setupTouchEnhancements();
-    
+
     // Handle orientation changes
     setupOrientationHandling();
-    
+
     // Optimize performance for mobile
     setupMobilePerformanceOptimizations();
   }
@@ -774,9 +774,9 @@ function setupMobileEnhancements() {
  */
 function setupTouchEnhancements() {
   // Improve touch scrolling
-  document.addEventListener('touchstart', () => {}, { passive: true });
-  document.addEventListener('touchmove', () => {}, { passive: true });
-  
+  document.addEventListener('touchstart', () => { }, { passive: true });
+  document.addEventListener('touchmove', () => { }, { passive: true });
+
   // Add haptic feedback for supported devices
   if ('vibrate' in navigator) {
     document.addEventListener('click', (event) => {
@@ -785,7 +785,7 @@ function setupTouchEnhancements() {
       }
     });
   }
-  
+
   // Prevent double-tap zoom on specific elements
   const preventDoubleTapZoom = (selector) => {
     document.addEventListener('touchend', (event) => {
@@ -795,7 +795,7 @@ function setupTouchEnhancements() {
       }
     });
   };
-  
+
   preventDoubleTapZoom('.nav-btn');
   preventDoubleTapZoom('.retry-button');
 }
@@ -805,18 +805,18 @@ function setupTouchEnhancements() {
  */
 function setupOrientationHandling() {
   let orientationTimeout;
-  
+
   const handleOrientationChange = () => {
     clearTimeout(orientationTimeout);
     orientationTimeout = setTimeout(() => {
       if (timelineApp) {
         console.log('Orientation changed, updating layout');
-        
+
         // Show brief feedback about orientation change
         const isLandscape = window.innerHeight < window.innerWidth;
-        timelineApp.showUserFeedback('info', 
+        timelineApp.showUserFeedback('info',
           `Switched to ${isLandscape ? 'landscape' : 'portrait'} mode`, 2000);
-        
+
         // Refresh timeline layout if needed
         if (timelineApp.timelineRenderer && timelineApp.timelineRenderer.timeline) {
           setTimeout(() => {
@@ -826,9 +826,9 @@ function setupOrientationHandling() {
       }
     }, 500); // Delay to allow for orientation transition
   };
-  
+
   window.addEventListener('orientationchange', handleOrientationChange);
-  
+
   // Fallback for browsers that don't support orientationchange
   window.addEventListener('resize', () => {
     clearTimeout(orientationTimeout);
@@ -857,7 +857,7 @@ function setupMobilePerformanceOptimizations() {
     }
   `;
   document.head.appendChild(style);
-  
+
   // Use passive event listeners for better scroll performance
   const passiveSupported = (() => {
     let passive = false;
@@ -866,16 +866,16 @@ function setupMobilePerformanceOptimizations() {
         get: () => { passive = true; }
       });
       window.addEventListener('test', null, options);
-    } catch (err) {}
+    } catch (err) { }
     return passive;
   })();
-  
+
   if (passiveSupported) {
-    document.addEventListener('touchstart', () => {}, { passive: true });
-    document.addEventListener('touchmove', () => {}, { passive: true });
-    document.addEventListener('wheel', () => {}, { passive: true });
+    document.addEventListener('touchstart', () => { }, { passive: true });
+    document.addEventListener('touchmove', () => { }, { passive: true });
+    document.addEventListener('wheel', () => { }, { passive: true });
   }
-  
+
   // Optimize timeline for mobile devices
   if (timelineApp && timelineApp.timelineRenderer) {
     // Mobile-specific timeline options will be handled by TimelineRenderer

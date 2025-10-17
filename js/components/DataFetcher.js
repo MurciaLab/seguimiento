@@ -4,6 +4,9 @@ class DataFetcher {
     this.spreadsheetId = spreadsheetId;
     this.parser = new PublicGoogleSheetsParser();
     this.mainSheetId = '885988754';
+    
+    // Configure parser to use formatted data from spreadsheet
+    this.parser.setOption({ useFormat: true });
   }
 
   async fetchProjectList() {
@@ -45,7 +48,10 @@ class DataFetcher {
       const projectParser = new PublicGoogleSheetsParser();
       
       // Configure parser for project-specific sheet using project_id as sheet name
-      projectParser.setOption({ sheetName: projectId });
+      projectParser.setOption({ 
+        sheetName: projectId,
+        useFormat: true  // Get formatted data from spreadsheet
+      });
       
       // Fetch timeline data from project sheet
       const timelineData = await projectParser.parse(this.spreadsheetId);
@@ -98,37 +104,68 @@ class DataFetcher {
   }
 
   parseDate(dateString) {
-    if (!dateString || typeof dateString !== 'string') {
+    if (!dateString) {
       throw new Error('Invalid or missing date');
     }
 
-    // Handle DD/MM/YYYY format
-    const dateParts = dateString.trim().split('/');
-    if (dateParts.length !== 3) {
-      throw new Error(`Invalid date format: ${dateString}. Expected DD/MM/YYYY`);
+    // Convert to string if it's not already
+    const dateStr = String(dateString).trim();
+
+    // Handle DD/MM/YYYY format (most common from formatted Google Sheets)
+    const ddmmyyyyMatch = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (ddmmyyyyMatch) {
+      const day = parseInt(ddmmyyyyMatch[1], 10);
+      const month = parseInt(ddmmyyyyMatch[2], 10) - 1; // JavaScript months are 0-indexed
+      const year = parseInt(ddmmyyyyMatch[3], 10);
+
+      const date = new Date(year, month, day);
+      
+      // Verify the date was created correctly (handles invalid dates like 31/02/2020)
+      if (date.getDate() !== day || date.getMonth() !== month || date.getFullYear() !== year) {
+        throw new Error(`Invalid date: ${dateString}`);
+      }
+
+      return date;
     }
 
-    const day = parseInt(dateParts[0], 10);
-    const month = parseInt(dateParts[1], 10) - 1; // JavaScript months are 0-indexed
-    const year = parseInt(dateParts[2], 10);
+    // Handle MM/DD/YYYY format (alternative US format)
+    const mmddyyyyMatch = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (mmddyyyyMatch) {
+      // Try MM/DD/YYYY if DD/MM/YYYY didn't work
+      const month = parseInt(mmddyyyyMatch[1], 10) - 1;
+      const day = parseInt(mmddyyyyMatch[2], 10);
+      const year = parseInt(mmddyyyyMatch[3], 10);
 
-    // Validate date components
-    if (isNaN(day) || isNaN(month) || isNaN(year)) {
-      throw new Error(`Invalid date components in: ${dateString}`);
+      if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+        const date = new Date(year, month, day);
+        
+        if (date.getDate() === day && date.getMonth() === month && date.getFullYear() === year) {
+          return date;
+        }
+      }
     }
 
-    if (day < 1 || day > 31 || month < 0 || month > 11 || year < 1900 || year > 2100) {
-      throw new Error(`Date out of valid range: ${dateString}`);
+    // Handle ISO date format (YYYY-MM-DD)
+    const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (isoMatch) {
+      const year = parseInt(isoMatch[1], 10);
+      const month = parseInt(isoMatch[2], 10) - 1;
+      const day = parseInt(isoMatch[3], 10);
+      
+      const date = new Date(year, month, day);
+      
+      if (date.getDate() === day && date.getMonth() === month && date.getFullYear() === year) {
+        return date;
+      }
     }
 
-    const date = new Date(year, month, day);
-    
-    // Verify the date was created correctly (handles invalid dates like 31/02/2020)
-    if (date.getDate() !== day || date.getMonth() !== month || date.getFullYear() !== year) {
-      throw new Error(`Invalid date: ${dateString}`);
+    // Try parsing as a standard JavaScript date string
+    const parsedDate = new Date(dateStr);
+    if (!isNaN(parsedDate.getTime())) {
+      return parsedDate;
     }
 
-    return date;
+    throw new Error(`Invalid date format: ${dateString}. Expected DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD, or standard date format`);
   }
 
   createEventContent(event) {
