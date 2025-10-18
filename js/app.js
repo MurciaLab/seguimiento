@@ -166,10 +166,18 @@ class TimelineApp {
       return;
     }
 
+    console.log(`Switching to project: ${project.project_name} (ID: ${project.project_id})`);
+    console.log(`Previous project: ${this.currentProject ? this.currentProject.project_name : 'none'}`);
+
     try {
       this.isLoading = true;
       this.currentProject = project;
       this.updateAppState({ currentView: 'timeline' });
+
+      // Clear any existing timeline content before loading new project
+      if (this.timelineRenderer) {
+        this.timelineRenderer.clearContainer();
+      }
 
       // Show loading state immediately (Requirement 1.5 - user feedback during fetch)
       this.showTimelineLoading(true);

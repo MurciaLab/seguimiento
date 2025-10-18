@@ -1231,12 +1231,15 @@ class TimelineRenderer {
    * Clear timeline container (but preserve timeline DOM element)
    */
   clearContainer() {
-    // Don't destroy the timeline DOM element, just clear the data
+    // Clear the dataset if it exists
     if (this.dataset) {
       this.dataset.clear();
     }
     
-    // Only show message if timeline doesn't exist
+    // Always clear the container HTML to ensure clean state
+    this.container.innerHTML = '';
+    
+    // If no timeline exists, show default message
     if (!this.timeline) {
       this.container.innerHTML = `
         <div class="no-data-message">
@@ -1244,6 +1247,7 @@ class TimelineRenderer {
         </div>
       `;
     }
+    // If timeline exists, it will be reinitialized when new data is loaded
   }
 
   /**
@@ -1310,6 +1314,8 @@ class TimelineRenderer {
    * @param {Array} newData - New timeline data to display
    */
   updateData(newData) {
+    console.log(`TimelineRenderer.updateData called with ${newData ? newData.length : 0} items`);
+    
     if (!newData || !Array.isArray(newData)) {
       console.error('Invalid data provided to updateData method');
       this.showTimelineError('Invalid timeline data format');
@@ -1317,8 +1323,26 @@ class TimelineRenderer {
     }
 
     try {
-      // If timeline doesn't exist, initialize it first
-      if (!this.timeline) {
+      // Validate new items first
+      const validItems = this.validateTimelineItems(newData);
+      console.log(`Validated ${validItems.length} items for timeline`);
+      
+      if (validItems.length === 0) {
+        // For empty timelines, destroy any existing timeline and show empty message
+        if (this.timeline) {
+          this.timeline.destroy();
+          this.timeline = null;
+        }
+        this.showEmptyTimeline();
+        return true;
+      }
+
+      // For non-empty timelines, ensure timeline is initialized
+      // Check if timeline DOM structure exists
+      const timelineElements = this.container.querySelectorAll('.vis-timeline');
+      
+      if (!this.timeline || timelineElements.length === 0) {
+        // Timeline doesn't exist or DOM was cleared, initialize it
         const initialized = this.initializeTimeline();
         if (!initialized) {
           console.error('Failed to initialize timeline');
@@ -1326,16 +1350,8 @@ class TimelineRenderer {
         }
       }
 
-      // Validate new items
-      const validItems = this.validateTimelineItems(newData);
-
       // Clear existing data with smooth transition
       this.dataset.clear();
-      
-      if (validItems.length === 0) {
-        this.showEmptyTimeline();
-        return true;
-      }
 
       // Add all items at once (simplified approach)
       this.dataset.add(validItems);
