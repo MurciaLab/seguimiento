@@ -546,21 +546,7 @@ class TimelineApp {
     }
   }
 
-  /**
-   * Get the currently selected project
-   * @returns {Object|null} Current project or null
-   */
-  getCurrentProject() {
-    return this.currentProject;
-  }
 
-  /**
-   * Check if the application is currently loading data
-   * @returns {boolean} True if loading
-   */
-  isLoadingData() {
-    return this.isLoading;
-  }
 
   /**
    * Get current application state
@@ -585,25 +571,7 @@ class TimelineApp {
     this.appState = { ...this.appState, ...newState };
   }
 
-  /**
-   * Reset application to initial state
-   */
-  resetAppState() {
-    this.currentProject = null;
-    this.isLoading = false;
-    this.appState = {
-      initialized: false,
-      hasData: false,
-      currentView: 'selector'
-    };
 
-    // Clear UI
-    this.clearTimeline();
-    if (this.projectSelector) {
-      this.projectSelector.clearSelection();
-    }
-    this.hideError();
-  }
 
   /**
    * Configure spreadsheet ID for data fetching

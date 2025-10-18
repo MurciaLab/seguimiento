@@ -1280,14 +1280,8 @@ class TimelineRenderer {
         return true;
       }
 
-      // Add items to dataset with performance optimization for large datasets
-      if (validItems.length > 50) {
-        // For large datasets, add items in batches to maintain smooth performance
-        this.addItemsInBatches(validItems);
-      } else {
-        // For smaller datasets, add all items at once
-        this.dataset.add(validItems);
-      }
+      // Add all items to dataset
+      this.dataset.add(validItems);
 
       // Fit timeline to show all items with smooth animation (Requirement 2.3, 2.4)
       setTimeout(() => {
@@ -1346,9 +1340,16 @@ class TimelineRenderer {
       // Add all items at once (simplified approach)
       this.dataset.add(validItems);
       
-      // Set one year window after a delay to ensure timeline is rendered
+      // Fit all items in the timeline view
       setTimeout(() => {
-        this.setOneYearWindow(validItems);
+        if (this.timeline && validItems.length > 0) {
+          this.timeline.fit({
+            animation: {
+              duration: 750,
+              easingFunction: 'easeInOutQuad'
+            }
+          });
+        }
       }, 500);
 
       console.log(`Timeline updated with ${validItems.length} items`);
@@ -1361,88 +1362,9 @@ class TimelineRenderer {
     }
   }
 
-  /**
-   * Set default timeline window: now - 1 year, or last event - 1 year
-   * @param {Array} items - Timeline items to determine date range
-   */
-  setOneYearWindow(items) {
-    if (!this.timeline) {
-      console.error('Timeline not available for window setting');
-      return;
-    }
-    
-    try {
-      const now = new Date();
-      
-      // Find the latest event date
-      const eventDates = items.map(item => item.start).filter(date => date instanceof Date && !isNaN(date.getTime()));
-      
-      if (eventDates.length === 0) {
-        console.warn('No valid dates found, using current year');
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(now.getFullYear() - 1);
-        this.timeline.setWindow(oneYearAgo, now, { animation: false });
-        return;
-      }
-      
-      const lastEventDate = new Date(Math.max(...eventDates));
-      const oneYearAgo = new Date();
-      oneYearAgo.setFullYear(now.getFullYear() - 1);
-      
-      let startDate, endDate;
-      
-      if (lastEventDate < oneYearAgo) {
-        // If last event is older than 1 year ago, show 1 year ending 1 month after last event
-        endDate = new Date(lastEventDate);
-        endDate.setMonth(endDate.getMonth() + 1); // Add 1 month buffer
-        startDate = new Date(endDate);
-        startDate.setFullYear(endDate.getFullYear() - 1);
-      } else {
-        // Show last year from now, plus 1 month buffer
-        endDate = new Date(now);
-        endDate.setMonth(endDate.getMonth() + 1); // Add 1 month buffer
-        startDate = new Date(endDate);
-        startDate.setFullYear(endDate.getFullYear() - 1);
-      }
-      
-      this.timeline.setWindow(startDate, endDate, {
-        animation: false // No animation to avoid conflicts
-      });
-      
-    } catch (error) {
-      console.error('Error setting one year window:', error);
-    }
-  }
 
-  /**
-   * Add items to dataset in batches for better performance with large datasets
-   * @param {Array} items - Timeline items to add
-   * @param {Function} callback - Called when all items are added
-   */
-  addItemsInBatches(items, callback) {
-    const batchSize = 25;
-    let currentIndex = 0;
 
-    const addBatch = () => {
-      const batch = items.slice(currentIndex, currentIndex + batchSize);
-      if (batch.length > 0) {
-        this.dataset.add(batch);
-        currentIndex += batchSize;
 
-        if (currentIndex < items.length) {
-          // Schedule next batch with small delay to maintain smooth performance
-          setTimeout(addBatch, 10);
-        } else {
-          // All items added, call callback
-          if (callback) {
-            setTimeout(callback, 50); // Small delay to ensure rendering is complete
-          }
-        }
-      }
-    };
-
-    addBatch();
-  }
 
   /**
    * Validate and format timeline items for vis-timeline
