@@ -269,6 +269,8 @@
   transform: scale(1.1) !important;
 }
 
+
+
 .timeline-card.party-podemos {
   border-left-color: #6f2c91;
 }
@@ -1799,4 +1801,27 @@
     box-shadow: none;
     border: 1px solid #ccc;
   }
+}
+
+/* Target emojis in vis-timeline items directly */
+.vis-item a[href*="http"] {
+  font-size: 32px !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  padding: 4px !important;
+}
+
+/* Alternative approach - target all links in timeline cards that contain common emojis */
+.vis-item a[href]:contains("📰"),
+.vis-item a[href]:contains("🐦"),
+.vis-item a[href]:contains("📱"),
+.vis-item a[href]:contains("💬"),
+.vis-item a[href]:contains("📺"),
+.vis-item a[href]:contains("🌐") {
+  font-size: 32px !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  padding: 4px !important;
 }

@@ -184,16 +184,22 @@ class DataFetcher {
       ? description.substring(0, 160).trim() + '...'
       : description;
 
+    // Format the date for display
+    const eventDate = event.date_announced || 'No date';
+
     return `
       <div class="timeline-card-compact ${partyClass}" style="background-color: white; padding: 8px 10px;">
-        <div style="margin-bottom: 15px; color: #2d3748; font-size: 13px; font-weight: bold;">
+        <div style="margin-bottom: 8px; color: #2d3748; font-size: 13px; font-weight: bold;">
           <strong>${this.escapeHtml(headline)}</strong>
+        </div>
+        <div style="margin-bottom: 8px; color: #718096; font-size: 10px; font-weight: 500;">
+          <em>${this.escapeHtml(eventDate)}</em>
         </div>
         <div style="margin-bottom: 15px; color: #4a5568; font-size: 11px; line-height: 1.4;">
           ${this.escapeHtml(truncatedDescription)}
         </div>
         <div style="text-align: right; padding-top: 8px;">
-          <a href="${this.escapeHtml(newsLink)}" target="_blank" style="font-size: 36px; text-decoration: none; color: #3182ce; padding: 6px;">📰</a>
+          <a href="${this.escapeHtml(newsLink)}" target="_blank">📰</a>
         </div>
       </div>
     `;
