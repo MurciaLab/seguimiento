@@ -168,7 +168,7 @@ class MediaTypeHandler {
     const mediaTypeClass = `media-${mediaType}`;
     
     // Handle missing or incomplete data gracefully
-    const headline = mediaEvent.headline || 'No headline available';
+    const headline = mediaEvent.headline || t('noHeadlineAvailable');
     const description = mediaEvent.description || '';
     const party = mediaEvent.party || '';
     const date = mediaEvent.date_announced || '';
@@ -237,15 +237,15 @@ class MediaTypeHandler {
    */
   static getMediaTypeLabel(mediaType) {
     const labelMap = {
-      [this.MEDIA_TYPES.TWITTER]: 'Twitter',
-      [this.MEDIA_TYPES.NEWS]: 'News Article',
-      [this.MEDIA_TYPES.YOUTUBE]: 'YouTube',
-      [this.MEDIA_TYPES.FACEBOOK]: 'Facebook',
-      [this.MEDIA_TYPES.INSTAGRAM]: 'Instagram',
-      [this.MEDIA_TYPES.UNKNOWN]: 'Link'
+      [this.MEDIA_TYPES.TWITTER]: t('twitter'),
+      [this.MEDIA_TYPES.NEWS]: t('newsArticle'),
+      [this.MEDIA_TYPES.YOUTUBE]: t('youtube'),
+      [this.MEDIA_TYPES.FACEBOOK]: t('facebook'),
+      [this.MEDIA_TYPES.INSTAGRAM]: t('instagram'),
+      [this.MEDIA_TYPES.UNKNOWN]: t('link')
     };
 
-    return labelMap[mediaType] || 'Unknown';
+    return labelMap[mediaType] || t('unknown');
   }
 
   /**

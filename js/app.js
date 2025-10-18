@@ -186,27 +186,27 @@ class TimelineApp {
         if (!timelineData || timelineData.length === 0) {
           console.warn(`No timeline data found for project ${project.project_id}`);
           this.showEmptyTimeline(project);
-          this.showUserFeedback('info', `No media events found for "${project.project_name}".`);
+          this.showUserFeedback('info', t('noMediaEvents').replace('this project', `"${project.project_name}"`));
         } else {
           // Requirement 1.4: Display Project_Timeline showing Media_Events for selected project only
           if (this.timelineRenderer) {
             const success = this.timelineRenderer.updateData(timelineData);
             if (success) {
               console.log(`Rendered ${timelineData.length} media events for project ${project.project_name}`);
-              this.showUserFeedback('success', `Loaded ${timelineData.length} media events for "${project.project_name}".`);
+              this.showUserFeedback('success', `${t('loaded')} ${timelineData.length} ${t('mediaEventsFor')} "${project.project_name}".`);
             } else {
               this.showPlaceholderTimeline(project, timelineData.length);
-              this.showUserFeedback('warning', 'Timeline visualization failed. Showing placeholder view.');
+              this.showUserFeedback('warning', t('timelineVisualizationFailed'));
             }
           } else {
             this.showPlaceholderTimeline(project, timelineData.length);
-            this.showUserFeedback('warning', 'Timeline renderer not available. Showing placeholder view.');
+            this.showUserFeedback('warning', t('timelineRendererNotAvailable'));
           }
         }
       } else {
         // Show placeholder timeline for testing when DataFetcher is not available
         this.showTestTimeline(project);
-        this.showUserFeedback('info', 'Using test data for demonstration.');
+        this.showUserFeedback('info', t('usingTestData'));
       }
 
       this.showTimelineLoading(false);
@@ -222,12 +222,12 @@ class TimelineApp {
       let errorType = 'error';
 
       if (error.message.includes('not found') || error.message.includes('does not exist')) {
-        errorMessage = `Project sheet "${project.project_name}" not found. The project may not have timeline data yet.`;
+        errorMessage = `${t('projectNotFound')} "${project.project_name}". ${t('projectNoData')}`;
         errorType = 'warning';
       } else if (error.message.includes('network') || error.message.includes('fetch')) {
-        errorMessage = `Network error loading "${project.project_name}". Please check your connection and try again.`;
+        errorMessage = `${t('networkError')} "${project.project_name}". ${t('checkConnection')}`;
       } else if (error.message.includes('parse') || error.message.includes('format')) {
-        errorMessage = `Data format error for "${project.project_name}". The project sheet may have invalid data.`;
+        errorMessage = `${t('dataFormatError')} "${project.project_name}". ${t('invalidData')}`;
       }
 
       // Show user-friendly error message
@@ -242,15 +242,15 @@ class TimelineApp {
 
   showPlaceholderTimeline(project, eventCount = null) {
     const timelineContainer = document.getElementById('timeline-container');
-    const eventInfo = eventCount !== null ? `<p>Media Events: ${eventCount}</p>` : '';
+    const eventInfo = eventCount !== null ? `<p>${t('mediaEvents')}: ${eventCount}</p>` : '';
 
     timelineContainer.innerHTML = `
       <div class="no-data-message">
-        <h3>Timeline for: ${project.project_name}</h3>
-        <p>Category: ${project.category}</p>
-        <p>Status: ${project.completed_date && project.completed_date.trim() ? `Completed (${project.completed_date})` : 'In Progress'}</p>
+        <h3>${t('timelineFor')}: ${project.project_name}</h3>
+        <p>${t('category')}: ${project.category}</p>
+        <p>${t('status')}: ${project.completed_date && project.completed_date.trim() ? `${t('completed')} (${project.completed_date})` : t('inProgress')}</p>
         ${eventInfo}
-        <p><em>Timeline visualization will be implemented in future tasks.</em></p>
+        <p><em>${t('timelineVisualizationWillBeImplemented')}</em></p>
       </div>
     `;
   }
@@ -259,11 +259,11 @@ class TimelineApp {
     const timelineContainer = document.getElementById('timeline-container');
     timelineContainer.innerHTML = `
       <div class="no-data-message">
-        <h3>Timeline for: ${project.project_name}</h3>
-        <p>Category: ${project.category}</p>
-        <p>Status: ${project.completed_date && project.completed_date.trim() ? `Completed (${project.completed_date})` : 'In Progress'}</p>
-        <p class="empty-state">No media events found for this project.</p>
-        <p><em>Check if the project sheet exists and contains data.</em></p>
+        <h3>${t('timelineFor')}: ${project.project_name}</h3>
+        <p>${t('category')}: ${project.category}</p>
+        <p>${t('status')}: ${project.completed_date && project.completed_date.trim() ? `${t('completed')} (${project.completed_date})` : t('inProgress')}</p>
+        <p class="empty-state">${t('noMediaEvents')}</p>
+        <p><em>${t('checkProjectSheet')}</em></p>
       </div>
     `;
   }
@@ -272,9 +272,9 @@ class TimelineApp {
     const timelineContainer = document.getElementById('timeline-container');
     timelineContainer.innerHTML = `
       <div class="no-data-message error-state">
-        <h3>Error loading timeline for: ${project.project_name}</h3>
+        <h3>${t('errorLoadingTimelineFor')}: ${project.project_name}</h3>
         <p class="error-details">${errorMessage}</p>
-        <button onclick="window.location.reload()" class="retry-button">Retry</button>
+        <button onclick="window.location.reload()" class="retry-button">${t('retry')}</button>
       </div>
     `;
   }
@@ -650,7 +650,7 @@ function setupGlobalEventListeners() {
   // Handle online/offline status changes
   window.addEventListener('online', () => {
     if (timelineApp) {
-      timelineApp.showUserFeedback('success', 'Connection restored. Data will be refreshed.', 3000);
+      timelineApp.showUserFeedback('success', t('connectionRestored'), 3000);
       // Refresh data when connection is restored
       setTimeout(() => {
         if (timelineApp.getAppState().initialized) {
@@ -662,7 +662,7 @@ function setupGlobalEventListeners() {
 
   window.addEventListener('offline', () => {
     if (timelineApp) {
-      timelineApp.showUserFeedback('warning', 'Connection lost. Some features may not work properly.', 0);
+      timelineApp.showUserFeedback('warning', t('connectionLost'), 0);
     }
   });
 
@@ -694,7 +694,7 @@ function setupGlobalEventListeners() {
     if ((event.ctrlKey || event.metaKey) && event.key === 'r' && event.shiftKey) {
       event.preventDefault();
       timelineApp.refreshData();
-      timelineApp.showUserFeedback('info', 'Refreshing data...', 2000);
+      timelineApp.showUserFeedback('info', t('refreshingData'), 2000);
     }
 
 
@@ -788,7 +788,7 @@ function setupOrientationHandling() {
         // Show brief feedback about orientation change
         const isLandscape = window.innerHeight < window.innerWidth;
         timelineApp.showUserFeedback('info',
-          `Switched to ${isLandscape ? 'landscape' : 'portrait'} mode`, 2000);
+          isLandscape ? t('switchedToLandscape') : t('switchedToPortrait'), 2000);
 
         // Refresh timeline layout if needed
         if (timelineApp.timelineRenderer && timelineApp.timelineRenderer.timeline) {

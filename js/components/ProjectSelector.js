@@ -51,7 +51,7 @@ class ProjectSelector {
     // Add default option
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
-    defaultOption.textContent = 'Select a project...';
+    defaultOption.textContent = t('selectProjectPlaceholder');
     this.selectElement.appendChild(defaultOption);
 
     // Group projects by category
@@ -145,7 +145,7 @@ class ProjectSelector {
    */
   showProjectInfo(project) {
     // Update category display
-    this.projectCategory.textContent = project.category || 'Uncategorized';
+    this.projectCategory.textContent = project.category || t('uncategorized');
 
     // Update status display
     const status = this.determineProjectStatus(project);
@@ -171,12 +171,12 @@ class ProjectSelector {
   determineProjectStatus(project) {
     if (project.completed_date && project.completed_date.trim()) {
       return {
-        text: `Completed (${project.completed_date})`,
+        text: `${t('completed')} (${project.completed_date})`,
         class: 'completed'
       };
     } else {
       return {
-        text: 'In Progress',
+        text: t('inProgress'),
         class: 'in-progress'
       };
     }

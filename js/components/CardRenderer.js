@@ -103,7 +103,7 @@ class CardRenderer {
     }
 
     // Default fallback
-    return 'Media Event';
+    return t('mediaEvent');
   }
 
   /**
@@ -119,8 +119,8 @@ class CardRenderer {
     }
 
     // If no description but we have a meaningful headline, indicate missing description
-    if (headline && headline !== 'Media Event' && headline !== 'No headline available') {
-      return 'No description available for this media event.';
+    if (headline && headline !== t('mediaEvent') && headline !== t('noHeadlineAvailable')) {
+      return t('noDescriptionAvailable');
     }
 
     // Return empty string for completely missing content
@@ -195,7 +195,7 @@ class CardRenderer {
    */
   static hasMinimalContent(headline, description, link) {
     // Must have at least a meaningful headline or description or a valid link
-    const hasHeadline = headline && headline !== 'Media Event';
+    const hasHeadline = headline && headline !== t('mediaEvent');
     const hasDescription = description && description.length > 0;
     const hasLink = link && link.length > 0;
 
@@ -235,7 +235,7 @@ class CardRenderer {
         <div class="card-header">
           <div class="media-info">
             <span class="media-icon">⚠️</span>
-            <span class="media-type">Incomplete Event</span>
+            <span class="media-type">${t('incompleteEvent')}</span>
             ${formattedDate ? `<span class="card-date">${formattedDate}</span>` : ''}
           </div>
           ${partyBadgeHTML}
@@ -247,7 +247,7 @@ class CardRenderer {
         </div>
         
         <div class="card-footer incomplete">
-          <span class="incomplete-notice">This event has incomplete information</span>
+          <span class="incomplete-notice">${t('incompleteNotice')}</span>
         </div>
       </div>
     `;
@@ -303,7 +303,7 @@ class CardRenderer {
         
         ${link ? `<div class="card-footer">
           <a href="${link}" target="_blank" rel="noopener noreferrer" class="external-link">
-            Read full ${mediaLabel.toLowerCase()} →
+            ${t('readFull')} ${mediaLabel.toLowerCase()} →
           </a>
         </div>` : ''}
       </div>

@@ -91,7 +91,7 @@ class DataFetcher {
           id: `event_${index}`,
           start: parsedDate,
           content: this.createEventContent(event),
-          title: event.headline || 'Media Event', // Minimal tooltip
+          title: event.headline || t('mediaEvent'), // Minimal tooltip
           party: event.party, // Keep original party name for processing
           group: event.party || 'Unknown',
           className: `party-${(event.party || 'unknown').toLowerCase().replace(/\s+/g, '-')}`,
@@ -171,8 +171,8 @@ class DataFetcher {
 
   createEventContent(event) {
     // Create compact HTML content for timeline card
-    const headline = event.headline || 'No headline';
-    const description = event.description || 'No description available';
+    const headline = event.headline || t('noHeadlineAvailable');
+    const description = event.description || t('noDescriptionAvailable');
     const party = event.party || 'Unknown';
     const newsLink = event.news_link || '#';
 

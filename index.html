@@ -4,15 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Google Sheet Timeline</title>
+  <title data-i18n="pageTitle">Seguimiento - MurciaLab</title>
 
   <!-- CSS Dependencies -->
   <link rel="stylesheet" href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" />
   <link rel="stylesheet" href="css/timeline.css" />
 
   <!-- JavaScript Dependencies -->
-  <script src="https://cdn.jsdelivr.net/npm/public-google-sheets-parser@latest"></script>
+  <script src="https://unpkg.com/i18next@latest/dist/umd/i18next.min.js"></script>
+  <script src="https://unpkg.com/public-google-sheets-parser@latest"></script>
   <script src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+
+  <!-- Internationalization -->
+  <script src="js/i18n.js"></script>
 
   <!-- Component Scripts -->
   <script src="js/components/DataFetcher.js"></script>
@@ -30,14 +34,14 @@
     <!-- Project Selector -->
     <div class="project-selector" id="project-selector">
       <div class="selector-header">
-        <label for="project-select">Select a Project:</label>
-        <span id="loading-indicator" class="loading" style="display: none;">Loading...</span>
+        <label for="project-select" data-i18n="selectProject">Select a Project:</label>
+        <span id="loading-indicator" class="loading" style="display: none;" data-i18n="loading">Loading...</span>
       </div>
-      
+
       <select id="project-select" class="project-dropdown">
-        <option value="">Loading projects...</option>
+        <option value="" data-i18n="loadingProjects">Loading projects...</option>
       </select>
-      
+
       <div class="project-info" id="project-info" style="display: none;">
         <div class="project-details">
           <span class="project-category" id="project-category"></span>
@@ -48,13 +52,14 @@
 
     <!-- Timeline Container -->
     <div id="timeline-container" class="timeline-container">
-      <div class="no-data-message">
+      <div class="no-data-message" data-i18n="selectProjectToView">
         Select a project to view its timeline
       </div>
     </div>
+  </div>
 
-    <!-- Error Display -->
-    <div id="error-message" class="error-message" style="display: none;"></div>
+  <!-- Error Display -->
+  <div id="error-message" class="error-message" style="display: none;"></div>
   </div>
 </body>
 

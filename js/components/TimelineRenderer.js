@@ -182,9 +182,9 @@ class TimelineRenderer {
     helpOverlay.innerHTML = `
       <div class="keyboard-shortcut"><span class="key">←→</span> Pan timeline</div>
       <div class="keyboard-shortcut"><span class="key">↑↓</span> Zoom in/out</div>
-      <div class="keyboard-shortcut"><span class="key">Home</span> Go to start</div>
-      <div class="keyboard-shortcut"><span class="key">End</span> Go to end</div>
-      <div class="keyboard-shortcut"><span class="key">Ctrl+F</span> Fit all</div>
+      <div class="keyboard-shortcut"><span class="key">Home</span> ${t('goToStart')}</div>
+      <div class="keyboard-shortcut"><span class="key">End</span> ${t('goToEnd')}</div>
+      <div class="keyboard-shortcut"><span class="key">Ctrl+F</span> ${t('fitAll')}</div>
     `;
     
     this.container.appendChild(helpOverlay);
@@ -210,8 +210,8 @@ class TimelineRenderer {
     touchIndicator.className = 'timeline-touch-indicator';
     touchIndicator.id = 'timeline-touch-indicator';
     touchIndicator.innerHTML = `
-      <div>📱 Pinch to zoom</div>
-      <div>👆 Swipe to pan</div>
+      <div>📱 ${t('pinchToZoom')}</div>
+      <div>👆 ${t('swipeToPan')}</div>
     `;
     
     this.container.appendChild(touchIndicator);
@@ -1059,12 +1059,12 @@ class TimelineRenderer {
         <div class="nav-viewport"></div>
       </div>
       <div class="nav-controls">
-        <button class="nav-btn nav-start" title="Go to start" aria-label="Go to timeline start">⏮</button>
-        <button class="nav-btn nav-zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+        <button class="nav-btn nav-start" title="${t('goToStart')}" aria-label="${t('goToStart')}">⏮</button>
+        <button class="nav-btn nav-zoom-out" title="${t('zoomOut')}" aria-label="${t('zoomOut')}">−</button>
         <span class="nav-position-text">50%</span>
-        <button class="nav-btn nav-zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
-        <button class="nav-btn nav-end" title="Go to end" aria-label="Go to timeline end">⏭</button>
-        <button class="nav-btn nav-fit" title="Fit all" aria-label="Fit all items">⊞</button>
+        <button class="nav-btn nav-zoom-in" title="${t('zoomIn')}" aria-label="${t('zoomIn')}">+</button>
+        <button class="nav-btn nav-end" title="${t('goToEnd')}" aria-label="${t('goToEnd')}">⏭</button>
+        <button class="nav-btn nav-fit" title="${t('fitAll')}" aria-label="${t('fitAll')}">⊞</button>
       </div>
     `;
     
@@ -1206,9 +1206,9 @@ class TimelineRenderer {
   showTimelineError(message) {
     this.container.innerHTML = `
       <div class="no-data-message error-state">
-        <h3>Timeline Error</h3>
+        <h3>${t('timelineError')}</h3>
         <p class="error-details">${message}</p>
-        <button onclick="window.location.reload()" class="retry-button">Retry</button>
+        <button onclick="window.location.reload()" class="retry-button">${t('retry')}</button>
       </div>
     `;
   }
@@ -1221,7 +1221,7 @@ class TimelineRenderer {
       <div class="no-data-message">
         <div class="loading-container">
           <div class="loading-spinner"></div>
-          <div class="loading-text">Loading timeline...</div>
+          <div class="loading-text">${t('loadingTimeline')}</div>
         </div>
       </div>
     `;
@@ -1240,7 +1240,7 @@ class TimelineRenderer {
     if (!this.timeline) {
       this.container.innerHTML = `
         <div class="no-data-message">
-          Select a project to view its timeline
+          ${t('selectProjectToView')}
         </div>
       `;
     }
@@ -1400,7 +1400,7 @@ class TimelineRenderer {
         // Ensure content exists
         if (!item.content) {
           console.warn(`Timeline item ${item.id} missing content, using placeholder`);
-          item.content = '<div class="timeline-card">No content available</div>';
+          item.content = `<div class="timeline-card">${t('noDescriptionAvailable')}</div>`;
         }
 
         // Set item type to box for card-style display
@@ -1430,9 +1430,9 @@ class TimelineRenderer {
   showEmptyTimeline() {
     this.container.innerHTML = `
       <div class="no-data-message">
-        <h3>No Timeline Data</h3>
-        <p>No media events found for this project.</p>
-        <p class="empty-state">The project sheet may be empty or contain invalid data.</p>
+        <h3>${t('noTimelineData')}</h3>
+        <p>${t('noMediaEvents')}</p>
+        <p class="empty-state">${t('projectSheetEmpty')}</p>
       </div>
     `;
   }
