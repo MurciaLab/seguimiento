@@ -57,6 +57,10 @@
   .project-selector {
     margin: 8px 0;
   }
+  
+  .project-details {
+    gap: 6px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -82,6 +86,32 @@
   .project-selector {
     margin: 6px 0;
   }
+  
+  .project-info {
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  
+  .project-details {
+    gap: 3px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+  
+  .project-category,
+  .project-status {
+    font-size: 9px;
+    padding: 1px 4px;
+    white-space: nowrap;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 
@@ -91,17 +121,17 @@
   margin: 10px 0;
 }
 
-.selector-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
+
 
 .project-selector label {
   font-weight: bold;
   color: #333;
   margin: 0;
+}
+
+.dropdown-container {
+  position: relative;
+  width: 100%;
 }
 
 .project-dropdown {
@@ -111,7 +141,7 @@
   border-radius: 4px;
   font-size: 16px;
   background-color: white;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 .project-dropdown:focus {
@@ -139,18 +169,16 @@
 
 /* Project Information Display */
 .project-info {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: white;
-  border-radius: 4px;
-  border: 1px solid #e2e8f0;
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .project-details {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 /* Project Category Badge */
@@ -1429,11 +1457,7 @@
     padding: 12px;
   }
 
-  .selector-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
+
 
   .project-dropdown {
     font-size: 16px;

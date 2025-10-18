@@ -40,18 +40,18 @@
   <div class="container" id="app-container">
     <!-- Project Selector -->
     <div class="project-selector" id="project-selector">
-      <div class="selector-header">
-        <span id="loading-indicator" class="loading" style="display: none;" data-i18n="loading">Loading...</span>
-      </div>
+      <span id="loading-indicator" class="loading" style="display: none;" data-i18n="loading">Loading...</span>
 
-      <select id="project-select" class="project-dropdown">
-        <option value="" data-i18n="loadingProjects">Loading projects...</option>
-      </select>
-
-      <div class="project-info" id="project-info" style="display: none;">
-        <div class="project-details">
-          <span class="project-category" id="project-category"></span>
-          <span class="project-status" id="project-status"></span>
+      <div class="dropdown-container">
+        <select id="project-select" class="project-dropdown">
+          <option value="" data-i18n="loadingProjects">Loading projects...</option>
+        </select>
+        
+        <div class="project-info" id="project-info" style="display: none;">
+          <div class="project-details">
+            <span class="project-category" id="project-category"></span>
+            <span class="project-status" id="project-status"></span>
+          </div>
         </div>
       </div>
     </div>
