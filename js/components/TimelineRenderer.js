@@ -145,11 +145,11 @@ class TimelineRenderer {
       // Add interaction helpers
       this.addInteractionHelpers();
       
-      console.log('Timeline initialized successfully');
+
       return true;
       
     } catch (error) {
-      console.error('Failed to initialize timeline:', error);
+
       this.showTimelineError('Failed to initialize timeline visualization');
       return false;
     }
@@ -329,10 +329,7 @@ class TimelineRenderer {
    * @param {Object} item - Selected timeline item
    */
   handleItemSelection(item) {
-    // Add visual feedback for selection
-    this.showSelectionFeedback(item);
-    
-    // Optional: Trigger custom selection event
+    // Trigger custom selection event
     this.dispatchCustomEvent('itemSelected', { item });
   }
 
@@ -340,10 +337,7 @@ class TimelineRenderer {
    * Handle item deselection
    */
   handleItemDeselection() {
-    // Remove visual feedback
-    this.hideSelectionFeedback();
-    
-    // Optional: Trigger custom deselection event
+    // Trigger custom deselection event
     this.dispatchCustomEvent('itemDeselected', {});
   }
 
@@ -352,9 +346,6 @@ class TimelineRenderer {
    * @param {Object} event - Range change event
    */
   handleRangeChange(event) {
-    // Update navigation indicators during interaction
-    this.updateNavigationIndicators(event);
-    
     // Update zoom level indicator
     this.updateZoomLevelIndicator(event);
     
@@ -389,9 +380,6 @@ class TimelineRenderer {
    * @param {Object} event - Range changed event
    */
   handleRangeChanged(event) {
-    // Update URL or state if needed
-    this.updateTimelineState(event);
-    
     // Dispatch custom event for external listeners
     this.dispatchCustomEvent('rangeChanged', {
       start: event.start,
@@ -437,9 +425,6 @@ class TimelineRenderer {
   handleContextMenu(event) {
     // Prevent default browser context menu
     event.event.preventDefault();
-    
-    // Show custom context menu if needed
-    this.showContextMenu(event);
   }
 
   /**
@@ -739,38 +724,7 @@ class TimelineRenderer {
     }, 600);
   }
 
-  /**
-   * Update navigation indicators (Requirement 2.5)
-   * @param {Object} event - Range change event
-   */
-  updateNavigationIndicators(event) {
-    // Add visual indicators for timeline navigation
-    // This could include progress bars, minimap, etc.
-    
-    if (!this.dataset) return;
-    
-    const items = this.dataset.get();
-    if (items.length === 0) return;
-    
-    const dates = items.map(item => item.start).filter(Boolean);
-    if (dates.length === 0) return;
-    
-    const minDate = Math.min(...dates);
-    const maxDate = Math.max(...dates);
-    const totalRange = maxDate - minDate;
-    
-    if (totalRange <= 0) return;
-    
-    const currentStart = event.start.getTime();
-    const currentEnd = event.end.getTime();
-    
-    // Calculate position within total range
-    const startPosition = Math.max(0, (currentStart - minDate) / totalRange);
-    const endPosition = Math.min(1, (currentEnd - minDate) / totalRange);
-    
-    // Update navigation indicator (if exists)
-    this.updateNavigationBar(startPosition, endPosition);
-  }
+
 
   /**
    * Optimize performance for large datasets (Requirement 2.5)
@@ -836,7 +790,7 @@ class TimelineRenderer {
     try {
       this.timeline.setOptions(clusterOptions);
     } catch (error) {
-      console.warn('Failed to enable clustering:', error);
+
     }
   }
 
@@ -866,7 +820,7 @@ class TimelineRenderer {
     try {
       this.timeline.setOptions(optimizedOptions);
     } catch (error) {
-      console.warn('Failed to optimize timeline options:', error);
+
     }
   }
 
@@ -906,7 +860,7 @@ class TimelineRenderer {
         const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
         
         if (fps < 30) {
-          console.warn(`Timeline performance warning: ${fps} FPS`);
+
           this.handleLowPerformance();
         }
         
@@ -975,187 +929,15 @@ class TimelineRenderer {
     }, 5000);
   }
 
-  /**
-   * Show visual feedback for item selection
-   * @param {Object} item - Selected item
-   */
-  showSelectionFeedback(item) {
-    // Add visual feedback (could be tooltip, highlight, etc.)
-  }
 
-  /**
-   * Hide visual feedback for item selection
-   */
-  hideSelectionFeedback() {
-    // Remove visual feedback
-  }
 
-  /**
-   * Show custom context menu
-   * @param {Object} event - Context menu event
-   */
-  showContextMenu(event) {
-    // Implement custom context menu if needed
-  }
 
-  /**
-   * Update timeline state (for URL or local storage)
-   * @param {Object} event - Range changed event
-   */
-  updateTimelineState(event) {
-    // Could save timeline state to URL parameters or localStorage
-    // for persistence across page reloads
-  }
 
-  /**
-   * Update navigation bar indicator
-   * @param {number} startPosition - Start position (0-1)
-   * @param {number} endPosition - End position (0-1)
-   */
-  updateNavigationBar(startPosition, endPosition) {
-    // Create or update navigation indicator
-    let navIndicator = document.getElementById('timeline-nav-indicator');
-    
-    if (!navIndicator) {
-      navIndicator = this.createNavigationIndicator();
-    }
-    
-    if (navIndicator) {
-      const viewportBar = navIndicator.querySelector('.nav-viewport');
-      if (viewportBar) {
-        const width = Math.max(2, (endPosition - startPosition) * 100);
-        const left = startPosition * 100;
-        
-        viewportBar.style.width = `${width}%`;
-        viewportBar.style.left = `${left}%`;
-      }
-      
-      // Update position text
-      const positionText = navIndicator.querySelector('.nav-position-text');
-      if (positionText) {
-        const percentage = Math.round((startPosition + endPosition) / 2 * 100);
-        positionText.textContent = `${percentage}%`;
-      }
-    }
-  }
 
-  /**
-   * Create navigation indicator element
-   * @returns {HTMLElement} Navigation indicator element
-   */
-  createNavigationIndicator() {
-    // Check if container has space for navigation indicator
-    if (!this.container || !this.container.parentElement) {
-      return null;
-    }
-    
-    // Create navigation indicator container
-    const navContainer = document.createElement('div');
-    navContainer.id = 'timeline-nav-indicator';
-    navContainer.className = 'timeline-navigation-indicator';
-    
-    navContainer.innerHTML = `
-      <div class="nav-track">
-        <div class="nav-viewport"></div>
-      </div>
-      <div class="nav-controls">
-        <button class="nav-btn nav-start" title="${t('goToStart')}" aria-label="${t('goToStart')}">⏮</button>
-        <button class="nav-btn nav-zoom-out" title="${t('zoomOut')}" aria-label="${t('zoomOut')}">−</button>
-        <span class="nav-position-text">50%</span>
-        <button class="nav-btn nav-zoom-in" title="${t('zoomIn')}" aria-label="${t('zoomIn')}">+</button>
-        <button class="nav-btn nav-end" title="${t('goToEnd')}" aria-label="${t('goToEnd')}">⏭</button>
-        <button class="nav-btn nav-fit" title="${t('fitAll')}" aria-label="${t('fitAll')}">⊞</button>
-      </div>
-    `;
-    
-    // Add event listeners for navigation controls
-    this.setupNavigationControls(navContainer);
-    
-    // Insert navigation indicator after timeline container
-    this.container.parentElement.insertBefore(navContainer, this.container.nextSibling);
-    
-    return navContainer;
-  }
 
-  /**
-   * Setup navigation control event listeners
-   * @param {HTMLElement} navContainer - Navigation container element
-   */
-  setupNavigationControls(navContainer) {
-    const startBtn = navContainer.querySelector('.nav-start');
-    const endBtn = navContainer.querySelector('.nav-end');
-    const zoomInBtn = navContainer.querySelector('.nav-zoom-in');
-    const zoomOutBtn = navContainer.querySelector('.nav-zoom-out');
-    const fitBtn = navContainer.querySelector('.nav-fit');
-    const track = navContainer.querySelector('.nav-track');
-    
-    if (startBtn) {
-      startBtn.addEventListener('click', () => this.goToStart());
-    }
-    
-    if (endBtn) {
-      endBtn.addEventListener('click', () => this.goToEnd());
-    }
-    
-    if (zoomInBtn) {
-      zoomInBtn.addEventListener('click', () => this.zoomIn());
-    }
-    
-    if (zoomOutBtn) {
-      zoomOutBtn.addEventListener('click', () => this.zoomOut());
-    }
-    
-    if (fitBtn) {
-      fitBtn.addEventListener('click', () => {
-        if (this.timeline) {
-          this.timeline.fit({ animation: { duration: 500 } });
-        }
-      });
-    }
-    
-    // Add click-to-navigate on track
-    if (track) {
-      track.addEventListener('click', (event) => {
-        const rect = track.getBoundingClientRect();
-        const clickPosition = (event.clientX - rect.left) / rect.width;
-        this.navigateToPosition(clickPosition);
-      });
-    }
-  }
 
-  /**
-   * Navigate to specific position in timeline
-   * @param {number} position - Position (0-1) in timeline
-   */
-  navigateToPosition(position) {
-    if (!this.timeline || !this.dataset) return;
-    
-    const items = this.dataset.get();
-    if (items.length === 0) return;
-    
-    const dates = items.map(item => item.start).filter(Boolean);
-    if (dates.length === 0) return;
-    
-    const minDate = Math.min(...dates);
-    const maxDate = Math.max(...dates);
-    const totalRange = maxDate - minDate;
-    
-    if (totalRange <= 0) return;
-    
-    const targetTime = minDate + (totalRange * position);
-    const targetDate = new Date(targetTime);
-    
-    // Get current range size to maintain zoom level
-    const currentRange = this.timeline.getWindow();
-    const rangeSize = currentRange.end - currentRange.start;
-    
-    // Center the view on target position
-    this.timeline.setWindow(
-      new Date(targetDate.getTime() - rangeSize / 2),
-      new Date(targetDate.getTime() + rangeSize / 2),
-      { animation: { duration: 300 } }
-    );
-  }
+
+
 
   /**
    * Dispatch custom event
@@ -1256,7 +1038,6 @@ class TimelineRenderer {
    */
   render(timelineData) {
     if (!timelineData || !Array.isArray(timelineData)) {
-      console.error('Invalid timeline data provided to render method');
       this.showTimelineError('Invalid timeline data format');
       return false;
     }
@@ -1303,7 +1084,7 @@ class TimelineRenderer {
       return true;
 
     } catch (error) {
-      console.error('Error rendering timeline:', error);
+
       this.showTimelineError('Failed to render timeline: ' + error.message);
       return false;
     }
@@ -1314,10 +1095,7 @@ class TimelineRenderer {
    * @param {Array} newData - New timeline data to display
    */
   updateData(newData) {
-    console.log(`TimelineRenderer.updateData called with ${newData ? newData.length : 0} items`);
-    
     if (!newData || !Array.isArray(newData)) {
-      console.error('Invalid data provided to updateData method');
       this.showTimelineError('Invalid timeline data format');
       return false;
     }
@@ -1325,7 +1103,6 @@ class TimelineRenderer {
     try {
       // Validate new items first
       const validItems = this.validateTimelineItems(newData);
-      console.log(`Validated ${validItems.length} items for timeline`);
       
       if (validItems.length === 0) {
         // For empty timelines, destroy any existing timeline and show empty message
@@ -1345,7 +1122,7 @@ class TimelineRenderer {
         // Timeline doesn't exist or DOM was cleared, initialize it
         const initialized = this.initializeTimeline();
         if (!initialized) {
-          console.error('Failed to initialize timeline');
+
           return false;
         }
       }
@@ -1368,11 +1145,11 @@ class TimelineRenderer {
         }
       }, 500);
 
-      console.log(`Timeline updated with ${validItems.length} items`);
+
       return true;
 
     } catch (error) {
-      console.error('Error updating timeline data:', error);
+
       this.showTimelineError('Failed to update timeline: ' + error.message);
       return false;
     }
@@ -1398,7 +1175,7 @@ class TimelineRenderer {
         }
 
         if (!item.start) {
-          console.warn(`Timeline item ${item.id} missing start date, skipping`);
+
           return;
         }
 
@@ -1409,13 +1186,13 @@ class TimelineRenderer {
 
         // Validate date
         if (isNaN(item.start.getTime())) {
-          console.warn(`Timeline item ${item.id} has invalid start date, skipping`);
+
           return;
         }
 
         // Ensure content exists
         if (!item.content) {
-          console.warn(`Timeline item ${item.id} missing content, using placeholder`);
+
           item.content = `<div class="timeline-card">${t('noDescriptionAvailable')}</div>`;
         }
 
@@ -1433,7 +1210,7 @@ class TimelineRenderer {
         validItems.push(item);
 
       } catch (error) {
-        console.warn(`Error validating timeline item ${index}:`, error);
+
       }
     });
 
@@ -1469,7 +1246,7 @@ class TimelineRenderer {
         end: range.end
       };
     } catch (error) {
-      console.error('Error getting timeline range:', error);
+
       return null;
     }
   }
@@ -1482,7 +1259,7 @@ class TimelineRenderer {
    */
   setRange(start, end, options = {}) {
     if (!this.timeline) {
-      console.warn('Timeline not initialized, cannot set range');
+
       return;
     }
 
@@ -1496,7 +1273,7 @@ class TimelineRenderer {
 
       this.timeline.setWindow(start, end, { ...defaultOptions, ...options });
     } catch (error) {
-      console.error('Error setting timeline range:', error);
+
     }
   }
 
@@ -1507,7 +1284,7 @@ class TimelineRenderer {
    */
   focusItem(itemId, options = {}) {
     if (!this.timeline) {
-      console.warn('Timeline not initialized, cannot focus item');
+
       return;
     }
 
@@ -1521,7 +1298,7 @@ class TimelineRenderer {
 
       this.timeline.focus(itemId, { ...defaultOptions, ...options });
     } catch (error) {
-      console.error('Error focusing timeline item:', error);
+
     }
   }
 
@@ -1583,7 +1360,7 @@ class TimelineRenderer {
 
 
     } catch (error) {
-      console.error('Error destroying timeline:', error);
+
     }
   }
 }

@@ -16,7 +16,7 @@ class ProjectSelector {
     this.selectedProject = null;
 
     if (!this.selectElement) {
-      console.error('ProjectSelector: project-select element not found');
+
       return;
     }
 
@@ -25,7 +25,7 @@ class ProjectSelector {
 
   init() {
     if (!this.selectElement) {
-      console.error('Cannot initialize ProjectSelector: selectElement is null');
+
       return;
     }
 
@@ -41,7 +41,7 @@ class ProjectSelector {
    */
   populateProjects(projects) {
     if (!this.selectElement) {
-      console.error('Cannot populate projects: selectElement is null');
+
       return;
     }
 

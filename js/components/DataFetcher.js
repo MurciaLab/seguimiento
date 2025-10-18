@@ -31,13 +31,13 @@ class DataFetcher {
         // Log info about optional columns that are missing
         const missingOptionalColumns = optionalColumns.filter(col => !(col in firstProject));
         if (missingOptionalColumns.length > 0) {
-          console.info(`Optional columns not found in main sheet: ${missingOptionalColumns.join(', ')}`);
+
         }
       }
 
       return projects;
     } catch (error) {
-      console.error('Error fetching project list:', error);
+
       throw new Error(`Failed to fetch project list: ${error.message}`);
     }
   }
@@ -69,7 +69,7 @@ class DataFetcher {
 
       return timelineData;
     } catch (error) {
-      console.error(`Error fetching timeline for project ${projectId}:`, error);
+
 
       // Handle case where project sheet doesn't exist
       if (error.message.includes('Unable to parse') || error.message.includes('not found')) {
@@ -98,7 +98,7 @@ class DataFetcher {
           type: 'box'
         };
       } catch (error) {
-        console.warn(`Skipping invalid event at index ${index}:`, error.message);
+
         return null;
       }
     }).filter(item => item !== null); // Remove invalid entries

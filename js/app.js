@@ -16,7 +16,7 @@ class TimelineApp {
 
   async init() {
     try {
-      console.log('Initializing Timeline Application...');
+
 
       // Set application state
       this.appState.initialized = false;
@@ -32,10 +32,10 @@ class TimelineApp {
 
       // Mark application as initialized
       this.appState.initialized = true;
-      console.log('Timeline Application initialized successfully');
+
 
     } catch (error) {
-      console.error('Failed to initialize application:', error);
+
       this.showError('Failed to initialize application: ' + error.message);
       this.appState.initialized = false;
     }
@@ -47,9 +47,9 @@ class TimelineApp {
   initializeTimelineRenderer() {
     try {
       this.timelineRenderer = new TimelineRenderer('timeline-container');
-      console.log('Timeline renderer initialized');
+
     } catch (error) {
-      console.error('Failed to initialize timeline renderer:', error);
+
       throw new Error('Timeline renderer initialization failed: ' + error.message);
     }
   }
@@ -62,9 +62,9 @@ class TimelineApp {
       this.projectSelector = new ProjectSelector('project-selector', (project) => {
         this.handleProjectSelection(project);
       });
-      console.log('Project selector initialized');
+
     } catch (error) {
-      console.error('Failed to initialize project selector:', error);
+
       throw new Error('Project selector initialization failed: ' + error.message);
     }
   }
@@ -79,15 +79,15 @@ class TimelineApp {
         this.dataFetcher = new DataFetcher(this.spreadsheetId);
         await this.loadProjects();
         this.appState.hasData = true;
-        console.log('Data fetcher initialized with real data');
+
       } else {
         // Fallback to placeholder data for testing
         this.loadPlaceholderProjects();
         this.appState.hasData = false;
-        console.log('Data fetcher not available, using placeholder data');
+
       }
     } catch (error) {
-      console.error('Failed to initialize data fetcher:', error);
+
       // Fallback to placeholder data on error
       this.loadPlaceholderProjects();
       this.appState.hasData = false;
@@ -166,8 +166,7 @@ class TimelineApp {
       return;
     }
 
-    console.log(`Switching to project: ${project.project_name} (ID: ${project.project_id})`);
-    console.log(`Previous project: ${this.currentProject ? this.currentProject.project_name : 'none'}`);
+
 
     try {
       this.isLoading = true;
@@ -192,7 +191,7 @@ class TimelineApp {
 
         // Validate that we received data for the correct project
         if (!timelineData || timelineData.length === 0) {
-          console.warn(`No timeline data found for project ${project.project_id}`);
+
           this.showEmptyTimeline(project);
           this.showUserFeedback('info', t('noMediaEvents').replace('this project', `"${project.project_name}"`));
         } else {
@@ -200,7 +199,7 @@ class TimelineApp {
           if (this.timelineRenderer) {
             const success = this.timelineRenderer.updateData(timelineData);
             if (success) {
-              console.log(`Rendered ${timelineData.length} media events for project ${project.project_name}`);
+
               this.showUserFeedback('success', `${t('loaded')} ${timelineData.length} ${t('mediaEventsFor')} "${project.project_name}".`);
             } else {
               this.showPlaceholderTimeline(project, timelineData.length);
@@ -223,7 +222,7 @@ class TimelineApp {
     } catch (error) {
       this.showTimelineLoading(false);
       this.showLoadingIndicator(false);
-      console.error(`Error loading timeline for project ${project.project_name}:`, error);
+
 
       // Enhanced error handling with specific error types
       let errorMessage = `Failed to load timeline for "${project.project_name}".`;
@@ -603,7 +602,7 @@ class TimelineApp {
    */
   async refreshData() {
     if (!this.appState.initialized) {
-      console.warn('Cannot refresh data: application not initialized');
+
       return;
     }
 
@@ -623,7 +622,7 @@ class TimelineApp {
 
     } catch (error) {
       this.showTimelineLoading(false);
-      console.error('Failed to refresh data:', error);
+
       this.showError('Failed to refresh data: ' + error.message);
     }
   }
@@ -676,7 +675,7 @@ function setupGlobalEventListeners() {
 
   // Handle unhandled promise rejections for better error reporting
   window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
+
     if (timelineApp) {
       timelineApp.showUserFeedback('error', 'An unexpected error occurred. Please refresh the page if problems persist.');
     }
@@ -684,7 +683,7 @@ function setupGlobalEventListeners() {
 
   // Handle general JavaScript errors
   window.addEventListener('error', (event) => {
-    console.error('JavaScript error:', event.error);
+
     if (timelineApp && event.error && event.error.message) {
       // Only show user feedback for non-trivial errors
       if (!event.error.message.includes('Script error') &&
@@ -762,7 +761,7 @@ function setupTouchEnhancements() {
   // Add haptic feedback for supported devices
   if ('vibrate' in navigator) {
     document.addEventListener('click', (event) => {
-      if (event.target.matches('.nav-btn, .retry-button, .project-dropdown')) {
+      if (event.target.matches('.retry-button, .project-dropdown')) {
         navigator.vibrate(10); // Short haptic feedback
       }
     });
@@ -778,7 +777,7 @@ function setupTouchEnhancements() {
     });
   };
 
-  preventDoubleTapZoom('.nav-btn');
+
   preventDoubleTapZoom('.retry-button');
 }
 
@@ -827,7 +826,7 @@ function setupMobilePerformanceOptimizations() {
     @media (max-width: 768px) {
       .timeline-card,
       .media-card,
-      .nav-btn,
+
       .user-feedback {
         transition-duration: 0.15s !important;
       }

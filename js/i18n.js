@@ -28,13 +28,13 @@ async function initializeI18n() {
     };
     
     await i18next.init(config);
-    console.log('i18next initialized successfully with Spanish translations');
+
     
     // Update translations after initialization
     updateTranslations();
     
   } catch (error) {
-    console.error('Failed to initialize i18next:', error);
+
     // Fallback to basic configuration without external files
     await i18next.init({
       lng: 'es',
