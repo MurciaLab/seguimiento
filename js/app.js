@@ -151,16 +151,10 @@ class TimelineApp {
   }
 
   async handleProjectSelection(project) {
-    console.log('=== handleProjectSelection called ===');
-    console.log('Project:', project ? project.project_name : 'null');
-    console.log('Current project:', this.currentProject ? this.currentProject.project_name : 'null');
-    console.log('Timeline renderer exists:', !!this.timelineRenderer);
-
     // Clear any existing error messages
     this.hideError();
 
     if (!project) {
-      console.log('No project selected, clearing current project');
       // Only clear timeline if explicitly requested (not during switching)
       this.currentProject = null;
       this.updateAppState({ currentView: 'selector' });
@@ -183,8 +177,6 @@ class TimelineApp {
 
       // Requirement 1.3: Fetch the corresponding Project_Sheet data
       if (this.dataFetcher && typeof this.dataFetcher.fetchProjectTimeline === 'function') {
-        console.log(`Fetching timeline data for project: ${project.project_name} (ID: ${project.project_id})`);
-
         const rawTimelineData = await this.dataFetcher.fetchProjectTimeline(project.project_id);
 
         // Transform data to timeline format
@@ -213,7 +205,6 @@ class TimelineApp {
         }
       } else {
         // Show placeholder timeline for testing when DataFetcher is not available
-        console.log(`DataFetcher not available, showing test timeline for project: ${project.project_name}`);
         this.showTestTimeline(project);
         this.showUserFeedback('info', 'Using test data for demonstration.');
       }
@@ -294,9 +285,7 @@ class TimelineApp {
 
     if (this.timelineRenderer && testTimelineData.length > 0) {
       const success = this.timelineRenderer.updateData(testTimelineData);
-      if (success) {
-        console.log(`Rendered test timeline with ${testTimelineData.length} items for project ${project.project_name}`);
-      } else {
+      if (!success) {
         this.showPlaceholderTimeline(project, testTimelineData.length);
       }
     } else {
@@ -470,7 +459,7 @@ class TimelineApp {
       }, duration);
     }
 
-    console.log(`User feedback (${type}): ${message}`);
+
   }
 
   /**
@@ -594,7 +583,6 @@ class TimelineApp {
    */
   updateAppState(newState) {
     this.appState = { ...this.appState, ...newState };
-    console.log('App state updated:', this.appState);
   }
 
   /**
@@ -631,7 +619,6 @@ class TimelineApp {
     // Reinitialize data fetcher with new spreadsheet ID
     if (typeof DataFetcher !== 'undefined') {
       this.dataFetcher = new DataFetcher(this.spreadsheetId);
-      console.log('Spreadsheet configured:', spreadsheetId);
     }
   }
 
@@ -657,7 +644,6 @@ class TimelineApp {
       }
 
       this.showTimelineLoading(false);
-      console.log('Data refreshed successfully');
 
     } catch (error) {
       this.showTimelineLoading(false);
@@ -688,7 +674,6 @@ function setupGlobalEventListeners() {
   // Handle page visibility changes to refresh data when user returns
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && timelineApp && timelineApp.getAppState().initialized) {
-      console.log('Page became visible, checking for data updates...');
       // Optional: refresh data when user returns to page
       // timelineApp.refreshData();
     }
@@ -757,7 +742,6 @@ function setupMobileEnhancements() {
     (window.innerWidth <= 768);
 
   if (isMobile) {
-    console.log('Mobile device detected, applying mobile enhancements');
 
     // Add mobile-specific CSS class
     document.body.classList.add('mobile-device');
@@ -785,8 +769,6 @@ function setupMobileEnhancements() {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       if (timelineApp && timelineApp.timelineRenderer) {
-        // Notify timeline renderer of resize
-        console.log('Window resized, updating timeline layout');
         // Timeline will handle resize automatically via vis-timeline
       }
     }, 250);
@@ -834,7 +816,6 @@ function setupOrientationHandling() {
     clearTimeout(orientationTimeout);
     orientationTimeout = setTimeout(() => {
       if (timelineApp) {
-        console.log('Orientation changed, updating layout');
 
         // Show brief feedback about orientation change
         const isLandscape = window.innerHeight < window.innerWidth;
@@ -903,7 +884,6 @@ function setupMobilePerformanceOptimizations() {
   // Optimize timeline for mobile devices
   if (timelineApp && timelineApp.timelineRenderer) {
     // Mobile-specific timeline options will be handled by TimelineRenderer
-    console.log('Mobile timeline optimizations will be applied by TimelineRenderer');
   }
 }
 

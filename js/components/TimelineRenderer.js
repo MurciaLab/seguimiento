@@ -326,8 +326,6 @@ class TimelineRenderer {
    * @param {Object} item - Selected timeline item
    */
   handleItemSelection(item) {
-    console.log('Timeline item selected:', item);
-    
     // Add visual feedback for selection
     this.showSelectionFeedback(item);
     
@@ -339,8 +337,6 @@ class TimelineRenderer {
    * Handle item deselection
    */
   handleItemDeselection() {
-    console.log('Timeline item deselected');
-    
     // Remove visual feedback
     this.hideSelectionFeedback();
     
@@ -390,12 +386,6 @@ class TimelineRenderer {
    * @param {Object} event - Range changed event
    */
   handleRangeChanged(event) {
-    console.log('Timeline range changed:', {
-      start: event.start,
-      end: event.end,
-      byUser: event.byUser
-    });
-
     // Update URL or state if needed
     this.updateTimelineState(event);
     
@@ -412,8 +402,6 @@ class TimelineRenderer {
    * @param {Object} event - Click event
    */
   handleTimelineClick(event) {
-    console.log('Timeline clicked:', event);
-    
     // If clicking on empty space, deselect items
     if (!event.item) {
       this.timeline.setSelection([]);
@@ -811,7 +799,6 @@ class TimelineRenderer {
     if (!this.dataset || !this.timeline) return;
     
     const itemCount = this.dataset.length;
-    console.log(`Performing large dataset optimizations for ${itemCount} items`);
     
     // For very large datasets (>500 items), implement clustering
     if (itemCount > 500) {
@@ -845,7 +832,6 @@ class TimelineRenderer {
     
     try {
       this.timeline.setOptions(clusterOptions);
-      console.log('Item clustering enabled for large dataset');
     } catch (error) {
       console.warn('Failed to enable clustering:', error);
     }
@@ -876,7 +862,6 @@ class TimelineRenderer {
     
     try {
       this.timeline.setOptions(optimizedOptions);
-      console.log('Timeline options optimized for large dataset');
     } catch (error) {
       console.warn('Failed to optimize timeline options:', error);
     }
@@ -942,7 +927,6 @@ class TimelineRenderer {
    * Handle low performance scenarios
    */
   handleLowPerformance() {
-    console.log('Applying additional performance optimizations');
     
     // Disable animations temporarily
     if (this.timeline) {
@@ -994,7 +978,6 @@ class TimelineRenderer {
    */
   showSelectionFeedback(item) {
     // Add visual feedback (could be tooltip, highlight, etc.)
-    console.log('Showing selection feedback for:', item.id);
   }
 
   /**
@@ -1002,7 +985,6 @@ class TimelineRenderer {
    */
   hideSelectionFeedback() {
     // Remove visual feedback
-    console.log('Hiding selection feedback');
   }
 
   /**
@@ -1011,7 +993,6 @@ class TimelineRenderer {
    */
   showContextMenu(event) {
     // Implement custom context menu if needed
-    console.log('Context menu requested:', event);
   }
 
   /**
@@ -1317,7 +1298,7 @@ class TimelineRenderer {
         }
       }, 100);
 
-      console.log(`Timeline rendered with ${validItems.length} items`);
+
       return true;
 
     } catch (error) {
@@ -1413,14 +1394,12 @@ class TimelineRenderer {
         endDate.setMonth(endDate.getMonth() + 1); // Add 1 month buffer
         startDate = new Date(endDate);
         startDate.setFullYear(endDate.getFullYear() - 1);
-        console.log(`Last event is old, showing year ending at: ${endDate.toDateString()}`);
       } else {
         // Show last year from now, plus 1 month buffer
         endDate = new Date(now);
         endDate.setMonth(endDate.getMonth() + 1); // Add 1 month buffer
         startDate = new Date(endDate);
         startDate.setFullYear(endDate.getFullYear() - 1);
-        console.log(`Showing current year: ${startDate.toDateString()} to ${endDate.toDateString()}`);
       }
       
       this.timeline.setWindow(startDate, endDate, {
@@ -1660,7 +1639,7 @@ class TimelineRenderer {
         this.container.innerHTML = '';
       }
 
-      console.log('Timeline destroyed successfully');
+
 
     } catch (error) {
       console.error('Error destroying timeline:', error);
