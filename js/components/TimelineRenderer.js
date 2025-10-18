@@ -835,9 +835,9 @@ class TimelineRenderer {
     const partyClass = `party-${this.getPartyGroupId(party)}`;
     
     return `
-      <div class="timeline-card-simple ${partyClass}">
-        <div class="card-title">${item.headline || 'Event'}</div>
-        <div class="card-party">${party}</div>
+      <div>
+        <div><strong>${item.headline || 'Event'}</strong></div>
+        <div><em>${party}</em></div>
       </div>
     `;
   }
