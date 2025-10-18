@@ -128,11 +128,11 @@ class TimelineRenderer {
     }
 
     try {
-      // Create timeline with datasets and options
+      // Create timeline with datasets and options (no groups for cleaner look)
       this.timeline = new vis.Timeline(
         this.container,
         this.dataset,
-        this.groups,
+        null,
         this.options
       );
 
@@ -1244,14 +1244,22 @@ class TimelineRenderer {
   }
 
   /**
-   * Clear timeline container
+   * Clear timeline container (but preserve timeline DOM element)
    */
   clearContainer() {
-    this.container.innerHTML = `
-      <div class="no-data-message">
-        Select a project to view its timeline
-      </div>
-    `;
+    // Don't destroy the timeline DOM element, just clear the data
+    if (this.dataset) {
+      this.dataset.clear();
+    }
+    
+    // Only show message if timeline doesn't exist
+    if (!this.timeline) {
+      this.container.innerHTML = `
+        <div class="no-data-message">
+          Select a project to view its timeline
+        </div>
+      `;
+    }
   }
 
   /**
@@ -1331,12 +1339,13 @@ class TimelineRenderer {
     }
 
     try {
-      // Show loading state during update
-      this.showLoading();
-
-      // If timeline doesn't exist, render from scratch
+      // If timeline doesn't exist, initialize it first
       if (!this.timeline) {
-        return this.render(newData);
+        const initialized = this.initializeTimeline();
+        if (!initialized) {
+          console.error('Failed to initialize timeline');
+          return false;
+        }
       }
 
       // Validate new items
@@ -1350,26 +1359,13 @@ class TimelineRenderer {
         return true;
       }
 
-      // Add new items with performance optimization for large datasets
-      if (validItems.length > 50) {
-        // For large datasets, add items in batches to maintain smooth performance
-        this.addItemsInBatches(validItems);
-      } else {
-        // For smaller datasets, add all items at once
-        this.dataset.add(validItems);
-      }
-
-      // Smooth transition to new data range with enhanced animation (Requirement 2.3, 2.4)
+      // Add all items at once (simplified approach)
+      this.dataset.add(validItems);
+      
+      // Set one year window after a delay to ensure timeline is rendered
       setTimeout(() => {
-        if (this.timeline && validItems.length > 0) {
-          this.timeline.fit({
-            animation: {
-              duration: 750,
-              easingFunction: 'easeInOutQuad'
-            }
-          });
-        }
-      }, 100);
+        this.setOneYearWindow(validItems);
+      }, 500);
 
       console.log(`Timeline updated with ${validItems.length} items`);
       return true;
@@ -1382,10 +1378,66 @@ class TimelineRenderer {
   }
 
   /**
+   * Set default timeline window: now - 1 year, or last event - 1 year
+   * @param {Array} items - Timeline items to determine date range
+   */
+  setOneYearWindow(items) {
+    if (!this.timeline) {
+      console.error('Timeline not available for window setting');
+      return;
+    }
+    
+    try {
+      const now = new Date();
+      
+      // Find the latest event date
+      const eventDates = items.map(item => item.start).filter(date => date instanceof Date && !isNaN(date.getTime()));
+      
+      if (eventDates.length === 0) {
+        console.warn('No valid dates found, using current year');
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(now.getFullYear() - 1);
+        this.timeline.setWindow(oneYearAgo, now, { animation: false });
+        return;
+      }
+      
+      const lastEventDate = new Date(Math.max(...eventDates));
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(now.getFullYear() - 1);
+      
+      let startDate, endDate;
+      
+      if (lastEventDate < oneYearAgo) {
+        // If last event is older than 1 year ago, show 1 year ending 1 month after last event
+        endDate = new Date(lastEventDate);
+        endDate.setMonth(endDate.getMonth() + 1); // Add 1 month buffer
+        startDate = new Date(endDate);
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        console.log(`Last event is old, showing year ending at: ${endDate.toDateString()}`);
+      } else {
+        // Show last year from now, plus 1 month buffer
+        endDate = new Date(now);
+        endDate.setMonth(endDate.getMonth() + 1); // Add 1 month buffer
+        startDate = new Date(endDate);
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        console.log(`Showing current year: ${startDate.toDateString()} to ${endDate.toDateString()}`);
+      }
+      
+      this.timeline.setWindow(startDate, endDate, {
+        animation: false // No animation to avoid conflicts
+      });
+      
+    } catch (error) {
+      console.error('Error setting one year window:', error);
+    }
+  }
+
+  /**
    * Add items to dataset in batches for better performance with large datasets
    * @param {Array} items - Timeline items to add
+   * @param {Function} callback - Called when all items are added
    */
-  addItemsInBatches(items) {
+  addItemsInBatches(items, callback) {
     const batchSize = 25;
     let currentIndex = 0;
 
@@ -1398,6 +1450,11 @@ class TimelineRenderer {
         if (currentIndex < items.length) {
           // Schedule next batch with small delay to maintain smooth performance
           setTimeout(addBatch, 10);
+        } else {
+          // All items added, call callback
+          if (callback) {
+            setTimeout(callback, 50); // Small delay to ensure rendering is complete
+          }
         }
       }
     };
@@ -1445,13 +1502,11 @@ class TimelineRenderer {
         // Set item type to box for card-style display
         item.type = 'box';
 
-        // Add party-based group and styling
+        // Add party-based styling (no groups needed)
         if (item.party) {
           const groupId = this.getPartyGroupId(item.party);
-          item.group = groupId;
           item.className = `party-${groupId}`;
         } else {
-          item.group = 'other';
           item.className = 'party-other';
         }
 

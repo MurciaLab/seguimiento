@@ -151,13 +151,18 @@ class TimelineApp {
   }
 
   async handleProjectSelection(project) {
+    console.log('=== handleProjectSelection called ===');
+    console.log('Project:', project ? project.project_name : 'null');
+    console.log('Current project:', this.currentProject ? this.currentProject.project_name : 'null');
+    console.log('Timeline renderer exists:', !!this.timelineRenderer);
+
     // Clear any existing error messages
     this.hideError();
 
     if (!project) {
-      // Clear timeline when no project is selected
+      console.log('No project selected, clearing current project');
+      // Only clear timeline if explicitly requested (not during switching)
       this.currentProject = null;
-      this.clearTimeline();
       this.updateAppState({ currentView: 'selector' });
       return;
     }
@@ -391,21 +396,39 @@ class TimelineApp {
     const timelineContainer = document.getElementById('timeline-container');
 
     if (show) {
-      const projectName = this.currentProject ? this.currentProject.project_name : 'project';
-      timelineContainer.innerHTML = `
-        <div class="no-data-message">
+      // Don't destroy existing timeline, just add loading overlay
+      const existingLoading = timelineContainer.querySelector('.loading-overlay');
+      if (!existingLoading) {
+        const projectName = this.currentProject ? this.currentProject.project_name : 'project';
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.className = 'loading-overlay';
+        loadingOverlay.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255, 255, 255, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        `;
+        loadingOverlay.innerHTML = `
           <div class="loading-container">
             <div class="loading-spinner"></div>
             <div class="loading-text">Loading timeline data for ${projectName}...</div>
           </div>
-        </div>
-      `;
+        `;
+        timelineContainer.style.position = 'relative';
+        timelineContainer.appendChild(loadingOverlay);
+      }
     } else {
-      // Clear loading state - the timeline content will be set by other methods
-      // Don't clear the container here as it might overwrite the actual timeline content
-      // Just ensure any loading spinners are removed
-      const loadingContainers = timelineContainer.querySelectorAll('.loading-container');
-      loadingContainers.forEach(container => container.remove());
+      // Remove loading overlay
+      const loadingOverlay = timelineContainer.querySelector('.loading-overlay');
+      if (loadingOverlay) {
+        loadingOverlay.remove();
+      }
     }
   }
 
@@ -721,12 +744,7 @@ function setupGlobalEventListeners() {
       timelineApp.showUserFeedback('info', 'Refreshing data...', 2000);
     }
 
-    // Escape: Clear selection
-    if (event.key === 'Escape') {
-      if (timelineApp.projectSelector) {
-        timelineApp.projectSelector.clearSelection();
-      }
-    }
+
   });
 }
 
