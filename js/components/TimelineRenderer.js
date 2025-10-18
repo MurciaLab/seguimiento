@@ -128,6 +128,9 @@ class TimelineRenderer {
     }
 
     try {
+      // Clear any existing content (like initial "Select a project" message)
+      this.container.innerHTML = '';
+      
       // Create timeline with datasets and options (no groups for cleaner look)
       this.timeline = new vis.Timeline(
         this.container,
