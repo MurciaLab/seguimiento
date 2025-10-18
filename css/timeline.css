@@ -1,12 +1,94 @@
 /* Timeline and Project Selector Styling */
 
+/* Site Header Styles */
+.site-header {
+  padding: 8px 0;
+  margin-bottom: 0px;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-logo {
+  height: 150px;
+  width: auto;
+  max-width: 600px;
+  object-fit: contain;
+}
+
+.site-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Responsive Header Styles */
+@media (max-width: 768px) {
+  .site-header {
+    padding: 6px 0;
+    margin-bottom: 0px;
+  }
+  
+  .header-container {
+    padding: 0 15px;
+    gap: 6px;
+  }
+  
+  .site-logo {
+    height: 120px;
+    max-width: 500px;
+  }
+  
+  .site-title {
+    font-size: 24px;
+  }
+  
+  .project-selector {
+    margin: 8px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding: 4px 0;
+    margin-bottom: 0px;
+  }
+  
+  .header-container {
+    padding: 0 10px;
+    gap: 5px;
+  }
+  
+  .site-logo {
+    height: 110px;
+    max-width: 450px;
+  }
+  
+  .site-title {
+    font-size: 20px;
+  }
+  
+  .project-selector {
+    margin: 6px 0;
+  }
+}
+
+
+
 /* Project Selector Styles */
 .project-selector {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+  margin: 10px 0;
 }
 
 .selector-header {
