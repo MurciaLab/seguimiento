@@ -29,6 +29,8 @@
     "failedToRenderTimeline": "Error al renderizar la cronología",
     "failedToUpdateTimeline": "Error al actualizar la cronología",
     "twitter": "X",
+    "tweet": "Tuit",
+    "noDate": "Sin fecha",
     "newsArticle": "Artículo de Noticias",
     "youtube": "YouTube",
     "facebook": "Facebook",

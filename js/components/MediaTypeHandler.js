@@ -171,6 +171,7 @@ class MediaTypeHandler {
     const headline = mediaEvent.headline || t('noHeadlineAvailable');
     const description = mediaEvent.description || '';
     const party = mediaEvent.party || '';
+    const author = mediaEvent.author || '';
     const date = mediaEvent.date_announced || '';
     const link = mediaEvent.news_link || '';
 
@@ -183,29 +184,46 @@ class MediaTypeHandler {
       : description;
 
     // Build card HTML with media-specific styling
-    const cardHTML = `
-      <div class="media-card ${mediaTypeClass}">
-        <div class="media-header">
-          ${mediaIcon}
-          <div class="media-meta">
-            <span class="media-type">${this.getMediaTypeLabel(mediaType)}</span>
-            ${date ? `<span class="media-date">${date}</span>` : ''}
+    let cardHTML;
+
+    if (mediaType === this.MEDIA_TYPES.TWITTER) {
+      // Twitter cards: simple format with tweet content and author info
+      const twitterHandle = author ? `@${author}` : t('tweet');
+      cardHTML = `
+        <div>
+          <div>
+            <strong>${twitterHandle}</strong>
           </div>
-          ${partyBadge}
+          <div>
+            <em>${date || t('noDate')}</em>
+          </div>
+          <div>
+            ${truncatedDescription}
+          </div>
+          <div>
+            <a href="${link}" target="_blank">${this.getMediaEmoji(mediaType)}</a>
+          </div>
         </div>
-        <div class="media-content">
-          <h4 class="media-headline">
-            ${link ? `<a href="${link}" target="_blank" rel="noopener noreferrer">${headline}</a>` : headline}
-          </h4>
-          ${truncatedDescription ? `<p class="media-description">${truncatedDescription}</p>` : ''}
+      `;
+    } else {
+      // News and other media: simple format like DataFetcher used
+      cardHTML = `
+        <div>
+          <div>
+            <strong>${headline}</strong>
+          </div>
+          <div>
+            <em>${date || t('noDate')}</em>
+          </div>
+          <div>
+            ${truncatedDescription}
+          </div>
+          <div>
+            <a href="${link}" target="_blank">${this.getMediaEmoji(mediaType)}</a>
+          </div>
         </div>
-        ${link ? `<div class="media-footer">
-          <a href="${link}" target="_blank" rel="noopener noreferrer" class="media-link">
-            View ${this.getMediaTypeLabel(mediaType)} →
-          </a>
-        </div>` : ''}
-      </div>
-    `;
+      `;
+    }
 
     return cardHTML;
   }

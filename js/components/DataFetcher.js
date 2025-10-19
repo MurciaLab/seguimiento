@@ -170,49 +170,28 @@ class DataFetcher {
   }
 
   createEventContent(event) {
-    // Create compact HTML content for timeline card
+    // Use MediaTypeHandler for consistent card generation
+    if (typeof MediaTypeHandler !== 'undefined') {
+      return MediaTypeHandler.formatMediaCard(event);
+    }
+    
+    // Fallback simple card if MediaTypeHandler not available
     const headline = event.headline || t('noHeadlineAvailable');
     const description = event.description || t('noDescriptionAvailable');
-    const party = event.party || 'Unknown';
     const newsLink = event.news_link || '#';
-
-    // Get party class for styling
-    const partyClass = party ? `party-${party.toLowerCase().replace(/\s+/g, '-')}` : 'party-other';
-
-    // Truncate description to keep cards compact
-    const truncatedDescription = description.length > 160
-      ? description.substring(0, 160).trim() + '...'
-      : description;
-
-    // Format the date for display
     const eventDate = event.date_announced || 'No date';
 
     return `
       <div>
-        <div>
-          <strong>${this.escapeHtml(headline)}</strong>
-        </div>
-        <div>
-          <em>${this.escapeHtml(eventDate)}</em>
-        </div>
-        <div>
-          ${this.escapeHtml(truncatedDescription)}
-        </div>
-        <div>
-          <a href="${this.escapeHtml(newsLink)}" target="_blank">${this.getMediaIcon(newsLink)}</a>
-        </div>
+        <div><strong>${this.escapeHtml(headline)}</strong></div>
+        <div><em>${this.escapeHtml(eventDate)}</em></div>
+        <div>${this.escapeHtml(description)}</div>
+        <div><a href="${this.escapeHtml(newsLink)}" target="_blank">🔗</a></div>
       </div>
     `;
   }
 
-  getMediaIcon(url) {
-    // Use MediaTypeHandler if available, otherwise default to news icon
-    if (typeof MediaTypeHandler !== 'undefined') {
-      const mediaType = MediaTypeHandler.detectMediaType(url);
-      return MediaTypeHandler.getMediaEmoji(mediaType);
-    }
-    return '📰'; // Fallback to news icon
-  }
+
 
   escapeHtml(text) {
     const div = document.createElement('div');
