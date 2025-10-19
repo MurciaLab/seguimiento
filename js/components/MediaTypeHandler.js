@@ -5,7 +5,7 @@
 class MediaTypeHandler {
   // Media type constants for consistency
   static MEDIA_TYPES = {
-    TWITTER: 'twitter',
+    TWITTER: 'twitter', // Covers both Twitter and X
     NEWS: 'news',
     YOUTUBE: 'youtube',
     FACEBOOK: 'facebook',
@@ -57,15 +57,15 @@ class MediaTypeHandler {
   /**
    * Check if URL is a Twitter/X link
    * @param {string} url - URL to check
-   * @returns {boolean} True if Twitter link
+   * @returns {boolean} True if Twitter or X link
    */
   static isTwitterLink(url) {
     if (!url) return false;
-    
+
     const twitterPatterns = [
       /^https?:\/\/(www\.)?(twitter\.com|x\.com)\//,
       /^https?:\/\/mobile\.(twitter\.com|x\.com)\//,
-      /^https?:\/\/t\.co\//  // Twitter shortened URLs
+      /^https?:\/\/t\.co\//  // Twitter/X shortened URLs
     ];
 
     return twitterPatterns.some(pattern => pattern.test(url));
@@ -96,7 +96,7 @@ class MediaTypeHandler {
     ];
 
     const isSocialMedia = socialMediaPatterns.some(pattern => pattern.test(url));
-    
+
     // If it's not social media and is HTTP/HTTPS, consider it a news article
     return !isSocialMedia;
   }
@@ -108,7 +108,7 @@ class MediaTypeHandler {
    */
   static isYouTubeLink(url) {
     if (!url) return false;
-    
+
     const youtubePatterns = [
       /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//,
       /^https?:\/\/m\.youtube\.com\//
@@ -124,7 +124,7 @@ class MediaTypeHandler {
    */
   static isFacebookLink(url) {
     if (!url) return false;
-    
+
     const facebookPatterns = [
       /^https?:\/\/(www\.)?(facebook\.com|fb\.com)\//,
       /^https?:\/\/m\.facebook\.com\//
@@ -140,7 +140,7 @@ class MediaTypeHandler {
    */
   static isInstagramLink(url) {
     if (!url) return false;
-    
+
     const instagramPatterns = [
       /^https?:\/\/(www\.)?instagram\.com\//
     ];
@@ -166,7 +166,7 @@ class MediaTypeHandler {
 
     const mediaIcon = this.createMediaIcon(mediaType);
     const mediaTypeClass = `media-${mediaType}`;
-    
+
     // Handle missing or incomplete data gracefully
     const headline = mediaEvent.headline || t('noHeadlineAvailable');
     const description = mediaEvent.description || '';
@@ -178,8 +178,8 @@ class MediaTypeHandler {
     const partyBadge = party ? `<span class="party-badge party-${party.toLowerCase().replace(/\s+/g, '-')}">${party}</span>` : '';
 
     // Format description with truncation for long text
-    const truncatedDescription = description.length > 150 
-      ? description.substring(0, 150) + '...' 
+    const truncatedDescription = description.length > 150
+      ? description.substring(0, 150) + '...'
       : description;
 
     // Build card HTML with media-specific styling
@@ -211,11 +211,11 @@ class MediaTypeHandler {
   }
 
   /**
-   * Create media type icon
+   * Get media type emoji (just the emoji character)
    * @param {string} mediaType - Media type constant
-   * @returns {string} HTML for media icon
+   * @returns {string} Emoji character
    */
-  static createMediaIcon(mediaType) {
+  static getMediaEmoji(mediaType) {
     const iconMap = {
       [this.MEDIA_TYPES.TWITTER]: '🐦',
       [this.MEDIA_TYPES.NEWS]: '📰',
@@ -225,9 +225,17 @@ class MediaTypeHandler {
       [this.MEDIA_TYPES.UNKNOWN]: '🔗'
     };
 
-    const icon = iconMap[mediaType] || iconMap[this.MEDIA_TYPES.UNKNOWN];
-    
-    return `<span class="media-icon media-icon-${mediaType}" title="${this.getMediaTypeLabel(mediaType)}">${icon}</span>`;
+    return iconMap[mediaType] || iconMap[this.MEDIA_TYPES.UNKNOWN];
+  }
+
+  /**
+   * Create media type icon (HTML wrapped emoji)
+   * @param {string} mediaType - Media type constant
+   * @returns {string} HTML for media icon
+   */
+  static createMediaIcon(mediaType) {
+    const emoji = this.getMediaEmoji(mediaType);
+    return `<span class="media-icon media-icon-${mediaType}" title="${this.getMediaTypeLabel(mediaType)}">${emoji}</span>`;
   }
 
   /**
@@ -263,8 +271,8 @@ class MediaTypeHandler {
    * @returns {boolean} True if valid
    */
   static isValidMediaEvent(mediaEvent) {
-    return mediaEvent && 
-           typeof mediaEvent === 'object' && 
-           (mediaEvent.headline || mediaEvent.description || mediaEvent.news_link);
+    return mediaEvent &&
+      typeof mediaEvent === 'object' &&
+      (mediaEvent.headline || mediaEvent.description || mediaEvent.news_link);
   }
 }

@@ -199,10 +199,19 @@ class DataFetcher {
           ${this.escapeHtml(truncatedDescription)}
         </div>
         <div>
-          <a href="${this.escapeHtml(newsLink)}" target="_blank">📰</a>
+          <a href="${this.escapeHtml(newsLink)}" target="_blank">${this.getMediaIcon(newsLink)}</a>
         </div>
       </div>
     `;
+  }
+
+  getMediaIcon(url) {
+    // Use MediaTypeHandler if available, otherwise default to news icon
+    if (typeof MediaTypeHandler !== 'undefined') {
+      const mediaType = MediaTypeHandler.detectMediaType(url);
+      return MediaTypeHandler.getMediaEmoji(mediaType);
+    }
+    return '📰'; // Fallback to news icon
   }
 
   escapeHtml(text) {

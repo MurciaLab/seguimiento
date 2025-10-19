@@ -314,7 +314,7 @@ class TimelineApp {
         headline: `Opposition Response to ${project.project_name}`,
         description: `Political opposition raises concerns about the proposed ${project.project_name} project.`,
         party: 'PP',
-        news_link: 'https://twitter.com/example/status/123'
+        news_link: 'https://x.com/example/status/123'
       },
       {
         headline: `Community Meeting on ${project.project_name}`,
