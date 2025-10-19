@@ -91,7 +91,6 @@ class DataFetcher {
           id: `event_${index}`,
           start: parsedDate,
           content: this.createEventContent(event),
-          title: event.headline || t('mediaEvent'), // Minimal tooltip
           party: event.party, // Keep original party name for processing
           group: event.party || 'Unknown',
           className: `party-${(event.party || 'unknown').toLowerCase().replace(/\s+/g, '-')}`,

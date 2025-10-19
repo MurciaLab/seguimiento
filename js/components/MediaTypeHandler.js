@@ -164,19 +164,12 @@ class MediaTypeHandler {
       mediaType = this.detectMediaType(mediaEvent.news_link);
     }
 
-    const mediaIcon = this.createMediaIcon(mediaType);
-    const mediaTypeClass = `media-${mediaType}`;
-
     // Handle missing or incomplete data gracefully
     const headline = mediaEvent.headline || t('noHeadlineAvailable');
     const description = mediaEvent.description || '';
-    const party = mediaEvent.party || '';
     const author = mediaEvent.author || '';
     const date = mediaEvent.date_announced || '';
     const link = mediaEvent.news_link || '';
-
-    // Create party badge if party information is available
-    const partyBadge = party ? `<span class="party-badge party-${party.toLowerCase().replace(/\s+/g, '-')}">${party}</span>` : '';
 
     // Format description with truncation for long text
     const truncatedDescription = description.length > 150
@@ -201,7 +194,7 @@ class MediaTypeHandler {
             ${truncatedDescription}
           </div>
           <div>
-            <a href="${link}" target="_blank">${this.getMediaEmoji(mediaType)}</a>
+            <a href="${link}" target="_blank" title="${link}">${this.getMediaEmoji(mediaType)}</a>
           </div>
         </div>
       `;
@@ -219,7 +212,7 @@ class MediaTypeHandler {
             ${truncatedDescription}
           </div>
           <div>
-            <a href="${link}" target="_blank">${this.getMediaEmoji(mediaType)}</a>
+            <a href="${link}" target="_blank" title="${link}">${this.getMediaEmoji(mediaType)}</a>
           </div>
         </div>
       `;
