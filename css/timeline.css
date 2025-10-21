@@ -2,7 +2,8 @@
 
 /* CSS Custom Properties for Layout */
 :root {
-  --footer-space: 100px;
+  --footer-space: 180px;
+  /* 100px base + 80px for container/timeline spacing */
   /* Reserved space for future footer - adjust this value when footer is added */
   --header-height: 220px;
   /* Approximate header height including logo and project selector */
@@ -1219,7 +1220,8 @@ body {
   :root {
     --header-height: 200px;
     /* Smaller header on tablets */
-    --footer-space: 80px;
+    --footer-space: 150px;
+    /* 80px base + 70px for container/timeline spacing */
   }
 
   .container {
@@ -1251,7 +1253,8 @@ body {
   :root {
     --header-height: 180px;
     /* Mobile header */
-    --footer-space: 60px;
+    --footer-space: 100px;
+    /* 60px base + 40px for container/timeline spacing */
   }
 
   .container {
@@ -1448,7 +1451,8 @@ body {
   :root {
     --header-height: 160px;
     /* Compact mobile header */
-    --footer-space: 50px;
+    --footer-space: 82px;
+    /* 50px base + 32px for container/timeline spacing */
   }
 
   .container {
@@ -1597,7 +1601,8 @@ body {
   :root {
     --header-height: 120px;
     /* Compact landscape header */
-    --footer-space: 40px;
+    --footer-space: 72px;
+    /* 40px base + 32px for container/timeline spacing */
   }
 
   .timeline-container {
