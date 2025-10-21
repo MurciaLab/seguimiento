@@ -48,10 +48,10 @@ class TimelineRenderer {
         return item.content;
       },
       
-      // Timeline height and responsiveness - extend to bottom with footer space
-      height: 'calc(95vh - 320px)', // Full viewport minus header and footer space
-      minHeight: '300px',
-      maxHeight: 'calc(95vh - 200px)', // Allow more height on larger screens
+      // Timeline height and responsiveness - match timeline-container height
+      height: 'calc(95vh - var(--header-height) - var(--footer-space))',
+      minHeight: '250px', // Responsive minimum height
+      maxHeight: 'calc(95vh - 100px)', // Responsive maximum height
       
       // Date formatting
       format: {
