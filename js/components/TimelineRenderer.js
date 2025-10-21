@@ -49,9 +49,9 @@ class TimelineRenderer {
       },
       
       // Timeline height and responsiveness - match timeline-container height
-      height: 'calc(95vh - var(--header-height) - var(--footer-space))',
+      height: 'calc(100vh - var(--header-height) - var(--footer-space))',
       minHeight: '250px', // Responsive minimum height
-      maxHeight: 'calc(95vh - 100px)', // Responsive maximum height
+      maxHeight: 'calc(100vh - 100px)', // Responsive maximum height
       
       // Date formatting
       format: {
